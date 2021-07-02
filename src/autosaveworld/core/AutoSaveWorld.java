@@ -144,6 +144,7 @@ public class AutoSaveWorld extends JavaPlugin {
 		FileUtils.init();
 		StringUtils.init();
 		RestartWaiter.init();
+		AnvilRegion.init();
 	}
 
 	@Override

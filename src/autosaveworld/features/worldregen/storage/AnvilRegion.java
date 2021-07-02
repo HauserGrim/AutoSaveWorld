@@ -26,6 +26,9 @@ import java.util.List;
 import java.util.Map.Entry;
 
 public class AnvilRegion {
+  
+	public static void init() {
+	}
 
 	private final File regionfolder;
 	private final int columnX;
