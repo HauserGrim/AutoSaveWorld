@@ -17,22 +17,19 @@
 
 package autosaveworld.features.purge;
 
-import java.text.MessageFormat;
-import java.util.ArrayList;
-
-import org.bukkit.Bukkit;
-import org.bukkit.plugin.PluginManager;
-
 import autosaveworld.config.AutoSaveWorldConfig;
 import autosaveworld.core.AutoSaveWorld;
 import autosaveworld.core.logging.MessageLogger;
 import autosaveworld.features.purge.plugins.DatfilePurge;
 import autosaveworld.features.purge.plugins.essentials.EssentialsPurge;
-import autosaveworld.features.purge.plugins.lwc.LWCPurge;
-import autosaveworld.features.purge.plugins.mywarp.MyWarpPurge;
 import autosaveworld.features.purge.plugins.permissions.PermissionsPurge;
 import autosaveworld.features.purge.plugins.wg.WGPurge;
 import autosaveworld.utils.Threads.IntervalTaskThread;
+import org.bukkit.Bukkit;
+import org.bukkit.plugin.PluginManager;
+
+import java.text.MessageFormat;
+import java.util.ArrayList;
 
 public class AutoPurgeThread extends IntervalTaskThread {
 
@@ -67,16 +64,10 @@ public class AutoPurgeThread extends IntervalTaskThread {
 		activelist.calculateActivePlayers(AutoSaveWorld.getInstance().getMainConfig().purgeAwayTime * 1000);
 		MessageLogger.debug(MessageFormat.format("Found {0} active players", activelist.getActivePlayersCount()));
 
-		ArrayList<DataPurge> purges = new ArrayList<DataPurge>();
+		ArrayList<DataPurge> purges = new ArrayList<>();
 		PluginManager pm = Bukkit.getPluginManager();
 		if ((pm.getPlugin("WorldGuard") != null) && config.purgeWG) {
 			purges.add(new WGPurge(activelist));
-		}
-		if ((pm.getPlugin("LWC") != null) && config.purgeLWC) {
-			purges.add(new LWCPurge(activelist));
-		}
-		if ((pm.getPlugin("MyWarp") != null) && config.purgeMyWarp) {
-			purges.add(new MyWarpPurge(activelist));
 		}
 		if ((pm.getPlugin("Essentials") != null && config.purgeEssentials)) {
 			purges.add(new EssentialsPurge(activelist));

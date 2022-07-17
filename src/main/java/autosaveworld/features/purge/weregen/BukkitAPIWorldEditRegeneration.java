@@ -17,62 +17,170 @@
 
 package autosaveworld.features.purge.weregen;
 
-import java.util.Iterator;
-import java.util.LinkedList;
-
-import org.bukkit.Material;
-import org.bukkit.World;
-
-import com.sk89q.worldedit.EditSession;
-import com.sk89q.worldedit.Vector;
-import com.sk89q.worldedit.Vector2D;
-import com.sk89q.worldedit.blocks.BaseBlock;
-import com.sk89q.worldedit.blocks.BlockType;
-import com.sk89q.worldedit.bukkit.BukkitWorld;
-import com.sk89q.worldedit.regions.CuboidRegion;
-import com.sk89q.worldedit.regions.Region;
-import com.sk89q.worldguard.bukkit.BukkitUtil;
-
 import autosaveworld.core.logging.MessageLogger;
 import autosaveworld.features.purge.weregen.UtilClasses.BlockToPlaceBack;
 import autosaveworld.features.purge.weregen.UtilClasses.ItemSpawnListener;
 import autosaveworld.features.purge.weregen.WorldEditRegeneration.WorldEditRegenrationInterface;
 import autosaveworld.utils.BukkitUtils;
+import com.sk89q.worldedit.EditSession;
+import com.sk89q.worldedit.WorldEdit;
+import com.sk89q.worldedit.bukkit.BukkitWorld;
+import com.sk89q.worldedit.extent.reorder.MultiStageReorder.PlacementPriority;
+import com.sk89q.worldedit.math.BlockVector2;
+import com.sk89q.worldedit.math.BlockVector3;
+import com.sk89q.worldedit.regions.CuboidRegion;
+import com.sk89q.worldedit.regions.Region;
+import com.sk89q.worldedit.world.block.*;
+import org.bukkit.Material;
+import org.bukkit.World;
+
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.Map;
 
 //TODO: Migrate to new WorldEdit API
 public class BukkitAPIWorldEditRegeneration implements WorldEditRegenrationInterface {
 
-	private ItemSpawnListener itemremover = new ItemSpawnListener();
+	private final ItemSpawnListener itemremover = new ItemSpawnListener();
+
+	private static final Map<BlockType, PlacementPriority> priorityMap = new HashMap<>();
+
+	// From MultiStageReorder.java in WorldEdit
+	static {
+		// Late
+		priorityMap.put(BlockTypes.WATER, PlacementPriority.LATE);
+		priorityMap.put(BlockTypes.LAVA, PlacementPriority.LATE);
+		priorityMap.put(BlockTypes.SAND, PlacementPriority.LATE);
+		priorityMap.put(BlockTypes.GRAVEL, PlacementPriority.LATE);
+
+		// Late
+		BlockCategories.SAPLINGS.getAll().forEach(type -> priorityMap.put(type, PlacementPriority.LAST));
+		BlockCategories.FLOWER_POTS.getAll().forEach(type -> priorityMap.put(type, PlacementPriority.LAST));
+		BlockCategories.BUTTONS.getAll().forEach(type -> priorityMap.put(type, PlacementPriority.LAST));
+		BlockCategories.ANVIL.getAll().forEach(type -> priorityMap.put(type, PlacementPriority.LAST));
+		BlockCategories.WOODEN_PRESSURE_PLATES.getAll().forEach(type -> priorityMap.put(type, PlacementPriority.LAST));
+		// Keeping CARPETS for pre-1.19 compatibility
+		@SuppressWarnings("deprecation")
+		BlockCategory carpets = BlockCategories.CARPETS;
+		carpets.getAll().forEach(type -> priorityMap.put(type, PlacementPriority.LAST));
+		BlockCategories.WOOL_CARPETS.getAll().forEach(type -> priorityMap.put(type, PlacementPriority.LAST));
+		BlockCategories.RAILS.getAll().forEach(type -> priorityMap.put(type, PlacementPriority.LAST));
+		BlockCategories.BEDS.getAll().forEach(type -> priorityMap.put(type, PlacementPriority.LAST));
+		BlockCategories.SMALL_FLOWERS.getAll().forEach(type -> priorityMap.put(type, PlacementPriority.LAST));
+		priorityMap.put(BlockTypes.BLACK_BED, PlacementPriority.LAST);
+		priorityMap.put(BlockTypes.BLUE_BED, PlacementPriority.LAST);
+		priorityMap.put(BlockTypes.BROWN_BED, PlacementPriority.LAST);
+		priorityMap.put(BlockTypes.CYAN_BED, PlacementPriority.LAST);
+		priorityMap.put(BlockTypes.GRAY_BED, PlacementPriority.LAST);
+		priorityMap.put(BlockTypes.GREEN_BED, PlacementPriority.LAST);
+		priorityMap.put(BlockTypes.LIGHT_BLUE_BED, PlacementPriority.LAST);
+		priorityMap.put(BlockTypes.LIGHT_GRAY_BED, PlacementPriority.LAST);
+		priorityMap.put(BlockTypes.LIME_BED, PlacementPriority.LAST);
+		priorityMap.put(BlockTypes.MAGENTA_BED, PlacementPriority.LAST);
+		priorityMap.put(BlockTypes.ORANGE_BED, PlacementPriority.LAST);
+		priorityMap.put(BlockTypes.PINK_BED, PlacementPriority.LAST);
+		priorityMap.put(BlockTypes.PURPLE_BED, PlacementPriority.LAST);
+		priorityMap.put(BlockTypes.RED_BED, PlacementPriority.LAST);
+		priorityMap.put(BlockTypes.WHITE_BED, PlacementPriority.LAST);
+		priorityMap.put(BlockTypes.YELLOW_BED, PlacementPriority.LAST);
+		priorityMap.put(BlockTypes.GRASS, PlacementPriority.LAST);
+		priorityMap.put(BlockTypes.TALL_GRASS, PlacementPriority.LAST);
+		priorityMap.put(BlockTypes.ROSE_BUSH, PlacementPriority.LAST);
+		priorityMap.put(BlockTypes.DANDELION, PlacementPriority.LAST);
+		priorityMap.put(BlockTypes.BROWN_MUSHROOM, PlacementPriority.LAST);
+		priorityMap.put(BlockTypes.RED_MUSHROOM, PlacementPriority.LAST);
+		priorityMap.put(BlockTypes.FERN, PlacementPriority.LAST);
+		priorityMap.put(BlockTypes.LARGE_FERN, PlacementPriority.LAST);
+		priorityMap.put(BlockTypes.OXEYE_DAISY, PlacementPriority.LAST);
+		priorityMap.put(BlockTypes.AZURE_BLUET, PlacementPriority.LAST);
+		priorityMap.put(BlockTypes.TORCH, PlacementPriority.LAST);
+		priorityMap.put(BlockTypes.WALL_TORCH, PlacementPriority.LAST);
+		priorityMap.put(BlockTypes.FIRE, PlacementPriority.LAST);
+		priorityMap.put(BlockTypes.REDSTONE_WIRE, PlacementPriority.LAST);
+		priorityMap.put(BlockTypes.CARROTS, PlacementPriority.LAST);
+		priorityMap.put(BlockTypes.POTATOES, PlacementPriority.LAST);
+		priorityMap.put(BlockTypes.WHEAT, PlacementPriority.LAST);
+		priorityMap.put(BlockTypes.BEETROOTS, PlacementPriority.LAST);
+		priorityMap.put(BlockTypes.COCOA, PlacementPriority.LAST);
+		priorityMap.put(BlockTypes.LADDER, PlacementPriority.LAST);
+		priorityMap.put(BlockTypes.LEVER, PlacementPriority.LAST);
+		priorityMap.put(BlockTypes.REDSTONE_TORCH, PlacementPriority.LAST);
+		priorityMap.put(BlockTypes.REDSTONE_WALL_TORCH, PlacementPriority.LAST);
+		priorityMap.put(BlockTypes.SNOW, PlacementPriority.LAST);
+		priorityMap.put(BlockTypes.NETHER_PORTAL, PlacementPriority.LAST);
+		priorityMap.put(BlockTypes.END_PORTAL, PlacementPriority.LAST);
+		priorityMap.put(BlockTypes.REPEATER, PlacementPriority.LAST);
+		priorityMap.put(BlockTypes.VINE, PlacementPriority.LAST);
+		priorityMap.put(BlockTypes.LILY_PAD, PlacementPriority.LAST);
+		priorityMap.put(BlockTypes.NETHER_WART, PlacementPriority.LAST);
+		priorityMap.put(BlockTypes.PISTON, PlacementPriority.LAST);
+		priorityMap.put(BlockTypes.STICKY_PISTON, PlacementPriority.LAST);
+		priorityMap.put(BlockTypes.TRIPWIRE_HOOK, PlacementPriority.LAST);
+		priorityMap.put(BlockTypes.TRIPWIRE, PlacementPriority.LAST);
+		priorityMap.put(BlockTypes.STONE_PRESSURE_PLATE, PlacementPriority.LAST);
+		priorityMap.put(BlockTypes.HEAVY_WEIGHTED_PRESSURE_PLATE, PlacementPriority.LAST);
+		priorityMap.put(BlockTypes.LIGHT_WEIGHTED_PRESSURE_PLATE, PlacementPriority.LAST);
+		priorityMap.put(BlockTypes.COMPARATOR, PlacementPriority.LAST);
+		priorityMap.put(BlockTypes.IRON_TRAPDOOR, PlacementPriority.LAST);
+		priorityMap.put(BlockTypes.ACACIA_TRAPDOOR, PlacementPriority.LAST);
+		priorityMap.put(BlockTypes.BIRCH_TRAPDOOR, PlacementPriority.LAST);
+		priorityMap.put(BlockTypes.DARK_OAK_TRAPDOOR, PlacementPriority.LAST);
+		priorityMap.put(BlockTypes.JUNGLE_TRAPDOOR, PlacementPriority.LAST);
+		priorityMap.put(BlockTypes.OAK_TRAPDOOR, PlacementPriority.LAST);
+		priorityMap.put(BlockTypes.SPRUCE_TRAPDOOR, PlacementPriority.LAST);
+		priorityMap.put(BlockTypes.DAYLIGHT_DETECTOR, PlacementPriority.LAST);
+		priorityMap.put(BlockTypes.CAKE, PlacementPriority.LAST);
+
+		// Final
+		BlockCategories.DOORS.getAll().forEach(type -> priorityMap.put(type, PlacementPriority.FINAL));
+		BlockCategories.BANNERS.getAll().forEach(type -> priorityMap.put(type, PlacementPriority.FINAL));
+		BlockCategories.SIGNS.getAll().forEach(type -> priorityMap.put(type, PlacementPriority.FINAL));
+		// Keeping sign and wall_sign for 1.13 compatibility
+		@SuppressWarnings("deprecation")
+		BlockType sign = BlockTypes.SIGN;
+		priorityMap.put(sign, PlacementPriority.FINAL);
+		@SuppressWarnings("deprecation")
+		BlockType wallSign = BlockTypes.WALL_SIGN;
+		priorityMap.put(wallSign, PlacementPriority.FINAL);
+		priorityMap.put(BlockTypes.CACTUS, PlacementPriority.FINAL);
+		priorityMap.put(BlockTypes.SUGAR_CANE, PlacementPriority.FINAL);
+		priorityMap.put(BlockTypes.PISTON_HEAD, PlacementPriority.FINAL);
+		priorityMap.put(BlockTypes.MOVING_PISTON, PlacementPriority.FINAL);
+	}
+
+	private static <B extends BlockStateHolder<B>> PlacementPriority getPlacementPriority(B block) {
+		return priorityMap.getOrDefault(block.getBlockType(), PlacementPriority.FIRST);
+	}
 
 	@Override
 	public void regenerateRegion(World world, org.bukkit.util.Vector minpoint, org.bukkit.util.Vector maxpoint) {
-		Vector minbpoint = BukkitUtil.toVector(minpoint);
-		Vector maxbpoint = BukkitUtil.toVector(maxpoint);
+		BlockVector3 minbpoint = BlockVector3.at(minpoint.getX(), minpoint.getY(), minpoint.getZ());
+		BlockVector3 maxbpoint = BlockVector3.at(maxpoint.getX(), maxpoint.getY(), maxpoint.getZ());
 		regenerateRegion(world, minbpoint, maxbpoint);
 	}
 
 	@Override
-	@SuppressWarnings("deprecation")
-	public void regenerateRegion(World world, Vector minpoint, Vector maxpoint) {
+	public void regenerateRegion(World world, BlockVector3 minpoint, BlockVector3 maxpoint) {
 		BukkitWorld bw = new BukkitWorld(world);
-		EditSession es = new EditSession(bw, Integer.MAX_VALUE);
+		EditSession es = WorldEdit.getInstance().newEditSessionBuilder().world(bw).maxBlocks(Integer.MAX_VALUE).build();
 		es.setFastMode(true);
 		int maxy = bw.getMaxY() + 1;
 		Region region = new CuboidRegion(bw, minpoint, maxpoint);
-		LinkedList<BlockToPlaceBack> placeBackQueue = new LinkedList<BlockToPlaceBack>();
+		LinkedList<BlockToPlaceBack> placeBackQueue = new LinkedList<>();
 
 		// register listener that will prevent trash items from spawning
 		BukkitUtils.registerListener(itemremover);
 
 		// first save all blocks that are inside affected chunks but outside the region
-		for (Vector2D chunk : region.getChunks()) {
-			Vector min = new Vector(chunk.getBlockX() * 16, 0, chunk.getBlockZ() * 16);
+		for (BlockVector2 chunk : region.getChunks()) {
+			BlockVector3 min = BlockVector3.at(chunk.getBlockX() * 16, 0, chunk.getBlockZ() * 16);
 			for (int x = 0; x < 16; ++x) {
 				for (int y = 0; y < maxy; ++y) {
 					for (int z = 0; z < 16; ++z) {
-						Vector pt = min.add(x, y, z);
+						BlockVector3 pt = min.add(x, y, z);
 						if (!region.contains(pt)) {
-							placeBackQueue.add(new BlockToPlaceBack(pt, es.getBlock(pt)));
+							placeBackQueue.add(new BlockToPlaceBack(pt, es.getBlock(pt).toBaseBlock()));
 						}
 					}
 				}
@@ -82,7 +190,7 @@ public class BukkitAPIWorldEditRegeneration implements WorldEditRegenrationInter
 		//TODO: Set blocks that has tileentity to air first
 
 		// regenerate all affected chunks
-		for (Vector2D chunk : region.getChunks()) {
+		for (BlockVector2 chunk : region.getChunks()) {
 			try {
 				world.regenerateChunk(chunk.getBlockX(), chunk.getBlockZ());
 			} catch (Exception t) {
@@ -99,40 +207,20 @@ public class BukkitAPIWorldEditRegeneration implements WorldEditRegenrationInter
 		BukkitUtils.unregisterListener(itemremover);
 	}
 
-	private static PlaceBackStage[] placeBackStages = new PlaceBackStage[] {
+	private static final PlaceBackStage[] placeBackStages = new PlaceBackStage[] {
 		// normal stage place back
-		new PlaceBackStage(new PlaceBackStage.PlaceBackCheck() {
-			@Override
-			public boolean shouldPlaceBack(BaseBlock block) {
-				return !BlockType.shouldPlaceLast(block.getId()) && !BlockType.shouldPlaceFinal(block.getId());
-			}
-		}),
+		new PlaceBackStage(block -> !getPlacementPriority(block).equals(PlacementPriority.LAST) && !getPlacementPriority(block).equals(PlacementPriority.FINAL)),
 		// last stage place back
-		new PlaceBackStage(new PlaceBackStage.PlaceBackCheck() {
-			@Override
-			public boolean shouldPlaceBack(BaseBlock block) {
-				return BlockType.shouldPlaceLast(block.getId());
-			}
-		}),
+		new PlaceBackStage(block -> getPlacementPriority(block).equals(PlacementPriority.LAST)),
 		// final stage place back
-		new PlaceBackStage(new PlaceBackStage.PlaceBackCheck() {
-			@Override
-			public boolean shouldPlaceBack(BaseBlock block) {
-				return BlockType.shouldPlaceFinal(block.getId());
-			}
-		})
+		new PlaceBackStage(block -> getPlacementPriority(block).equals(PlacementPriority.FINAL))
 	};
 
-	private static class PlaceBackStage {
+	private record PlaceBackStage(
+			BukkitAPIWorldEditRegeneration.PlaceBackStage.PlaceBackCheck check) {
 
-		public static interface PlaceBackCheck {
-			public boolean shouldPlaceBack(BaseBlock block);
-		}
-
-		private PlaceBackCheck check;
-
-		public PlaceBackStage(PlaceBackCheck check) {
-			this.check = check;
+		public interface PlaceBackCheck {
+			boolean shouldPlaceBack(BaseBlock block);
 		}
 
 		public void processBlockPlaceBack(World world, EditSession es, LinkedList<BlockToPlaceBack> placeBackQueue) {
@@ -141,12 +229,12 @@ public class BukkitAPIWorldEditRegeneration implements WorldEditRegenrationInter
 				BlockToPlaceBack blockToPlaceBack = entryit.next();
 				BaseBlock block = blockToPlaceBack.getBlock();
 				if (check.shouldPlaceBack(block)) {
-					Vector pt = blockToPlaceBack.getPosition();
+					BlockVector3 pt = blockToPlaceBack.getPosition();
 					try {
 						// set block to air to fix one really weird problem
 						world.getBlockAt(pt.getBlockX(), pt.getBlockY(), pt.getBlockZ()).setType(Material.AIR);
 						// set block back if it is not air
-						if (!block.isAir()) {
+						if (!block.getBlockType().equals(BlockTypes.AIR)) {
 							es.rawSetBlock(pt, block);
 						}
 					} catch (Exception t) {
@@ -157,7 +245,5 @@ public class BukkitAPIWorldEditRegeneration implements WorldEditRegenrationInter
 				}
 			}
 		}
-
 	}
-
 }

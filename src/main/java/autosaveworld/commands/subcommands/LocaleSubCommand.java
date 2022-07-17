@@ -17,20 +17,19 @@
 
 package autosaveworld.commands.subcommands;
 
+import autosaveworld.commands.ISubCommand;
+import autosaveworld.config.LocaleChanger;
+import autosaveworld.core.logging.MessageLogger;
+import org.bukkit.command.CommandSender;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
-import org.bukkit.command.CommandSender;
-
-import autosaveworld.commands.ISubCommand;
-import autosaveworld.config.LocaleChanger;
-import autosaveworld.core.logging.MessageLogger;
-
 public class LocaleSubCommand implements ISubCommand {
 
-	private LocaleChanger localeChanger;
+	private final LocaleChanger localeChanger;
 	public LocaleSubCommand(LocaleChanger localeChanger) {
 		this.localeChanger = localeChanger;
 	}
@@ -39,29 +38,25 @@ public class LocaleSubCommand implements ISubCommand {
 	public void handle(CommandSender sender, String[] args) {
 		if ((args.length == 1) && args[0].equalsIgnoreCase("available")) {
 			MessageLogger.sendMessage(sender, "Available locales: " + localeChanger.getAvailableLocales());
-			return;
 		} else if ((args.length == 1) && args[0].equalsIgnoreCase("load")) {
 			MessageLogger.sendMessage(sender, "You should specify a locale to load (get available locales using /asw locale available command)");
-			return;
 		} else if ((args.length == 2) && args[0].equalsIgnoreCase("load")) {
 			String locale = args[1];
 			if (localeChanger.getAvailableLocales().contains(locale)) {
 				MessageLogger.sendMessage(sender, "Loading locale " + locale);
 				localeChanger.loadLocale(locale);
 				MessageLogger.sendMessage(sender, "Loaded locale " + locale);
-				return;
 			} else {
 				MessageLogger.sendMessage(sender, "Locale " + locale + " is not available");
-				return;
 			}
 		}
 	}
 
-	private List<String> cmds = Arrays.asList(new String[] {"available", "load"});
+	private final List<String> cmds = Arrays.asList("available", "load");
 	@Override
 	public List<String> tabComplete(CommandSender sender, String[] args) {
 		if (args.length == 1) {
-			ArrayList<String> result = new ArrayList<String>();
+			ArrayList<String> result = new ArrayList<>();
 			for (String command : cmds) {
 				if (command.startsWith(args[0])) {
 					result.add(command);
@@ -70,7 +65,7 @@ public class LocaleSubCommand implements ISubCommand {
 			return result;
 		}
 		if (args.length == 2 && args[0].equalsIgnoreCase("load")) {
-			ArrayList<String> result = new ArrayList<String>();
+			ArrayList<String> result = new ArrayList<>();
 			for (String locale : localeChanger.getAvailableLocales()) {
 				if (locale.startsWith(args[1])) {
 					result.add(locale);

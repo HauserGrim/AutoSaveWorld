@@ -17,9 +17,8 @@
 
 package autosaveworld.features.purge.weregen;
 
+import com.sk89q.worldedit.math.BlockVector3;
 import org.bukkit.World;
-
-import com.sk89q.worldedit.Vector;
 
 //TODO: write my own regen that pastes blocks directly to ChunkSections
 public class WorldEditRegeneration {
@@ -33,10 +32,10 @@ public class WorldEditRegeneration {
 		return instance;
 	}
 
-	public static interface WorldEditRegenrationInterface {
-		public void regenerateRegion(World world, org.bukkit.util.Vector minpoint, org.bukkit.util.Vector maxpoint);
+	public interface WorldEditRegenrationInterface {
+		void regenerateRegion(World world, org.bukkit.util.Vector minpoint, org.bukkit.util.Vector maxpoint);
 
-		public void regenerateRegion(World world, Vector minpoint, Vector maxpoint);
+		void regenerateRegion(World world, BlockVector3 minpoint, BlockVector3 maxpoint);
 	}
 
 }

@@ -58,9 +58,9 @@ public class FileUtils {
 		if (!file.exists()) {
 			return;
 		}
-		Files.walkFileTree(file.toPath(), new FileVisitor<Path>() {
+		Files.walkFileTree(file.toPath(), new FileVisitor<>() {
 			@Override
-			public FileVisitResult preVisitDirectory(Path dir, BasicFileAttributes attrs) throws IOException {
+			public FileVisitResult preVisitDirectory(Path dir, BasicFileAttributes attrs) {
 				return FileVisitResult.CONTINUE;
 			}
 
@@ -71,7 +71,7 @@ public class FileUtils {
 			}
 
 			@Override
-			public FileVisitResult visitFileFailed(Path file, IOException exc) throws IOException {
+			public FileVisitResult visitFileFailed(Path file, IOException exc) {
 				return FileVisitResult.CONTINUE;
 			}
 

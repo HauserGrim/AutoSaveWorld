@@ -17,11 +17,11 @@
 
 package autosaveworld.features.backup.utils.virtualfilesystem;
 
+import autosaveworld.utils.FileUtils;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Set;
-
-import autosaveworld.utils.FileUtils;
 
 public abstract class VirtualFileSystem {
 

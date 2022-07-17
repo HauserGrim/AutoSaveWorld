@@ -17,15 +17,15 @@
 
 package autosaveworld.features.consolecommand;
 
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.List;
-
 import autosaveworld.core.AutoSaveWorld;
 import autosaveworld.core.logging.MessageLogger;
 import autosaveworld.utils.BukkitUtils;
 import autosaveworld.utils.SchedulerUtils;
 import autosaveworld.utils.Threads.SIntervalTaskThread;
+
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.List;
 
 public class AutoConsoleCommandThread extends SIntervalTaskThread {
 
@@ -59,12 +59,9 @@ public class AutoConsoleCommandThread extends SIntervalTaskThread {
 
 	private void executeCommands(final List<String> commands) {
 		if (isEnabled()) {
-			SchedulerUtils.scheduleSyncTask(new Runnable() {
-				@Override
-				public void run() {
-					for (String command : commands) {
-						BukkitUtils.dispatchCommandAsConsole(command);
-					}
+			SchedulerUtils.scheduleSyncTask(() -> {
+				for (String command : commands) {
+					BukkitUtils.dispatchCommandAsConsole(command);
 				}
 			});
 		}
@@ -76,7 +73,7 @@ public class AutoConsoleCommandThread extends SIntervalTaskThread {
 	private final SimpleDateFormat msdf = new SimpleDateFormat("mm");
 
 	private List<String> getTimesToExecute() {
-		List<String> timestoexecute = new ArrayList<String>();
+		List<String> timestoexecute = new ArrayList<>();
 		int cminute = Integer.parseInt(msdf.format(System.currentTimeMillis()));
 		String ctime = sdf.format(System.currentTimeMillis());
 		if ((cminute != minute) && AutoSaveWorld.getInstance().getMainConfig().ccTimesModeCommands.containsKey(ctime)) {
@@ -90,7 +87,7 @@ public class AutoConsoleCommandThread extends SIntervalTaskThread {
 	private long intervalcounter = 0;
 
 	private List<Integer> getIntervalsToExecute() {
-		List<Integer> inttoexecute = new ArrayList<Integer>();
+		List<Integer> inttoexecute = new ArrayList<>();
 		for (int interval : AutoSaveWorld.getInstance().getMainConfig().ccIntervalsModeCommands.keySet()) {
 			if ((intervalcounter != 0) && ((intervalcounter % interval) == 0)) {
 				inttoexecute.add(interval);

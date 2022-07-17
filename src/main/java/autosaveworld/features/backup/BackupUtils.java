@@ -17,14 +17,14 @@
 
 package autosaveworld.features.backup;
 
+import autosaveworld.utils.FileUtils;
+import autosaveworld.utils.StringUtils;
+
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
-
-import autosaveworld.utils.FileUtils;
-import autosaveworld.utils.StringUtils;
 
 public class BackupUtils {
 
@@ -48,7 +48,7 @@ public class BackupUtils {
 					old = cur;
 					oldestBackupName = timestampString;
 				}
-			} catch (ParseException e) {
+			} catch (ParseException ignored) {
 			}
 		}
 		return oldestBackupName;

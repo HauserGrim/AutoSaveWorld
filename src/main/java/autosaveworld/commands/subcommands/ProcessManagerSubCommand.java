@@ -17,14 +17,13 @@
 
 package autosaveworld.commands.subcommands;
 
+import autosaveworld.commands.ISubCommand;
+import autosaveworld.features.processmanager.ProcessManager;
+import org.bukkit.command.CommandSender;
+
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
-
-import org.bukkit.command.CommandSender;
-
-import autosaveworld.commands.ISubCommand;
-import autosaveworld.features.processmanager.ProcessManager;
 
 public class ProcessManagerSubCommand implements ISubCommand {
 

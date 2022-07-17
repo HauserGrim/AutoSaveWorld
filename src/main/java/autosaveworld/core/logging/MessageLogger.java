@@ -17,23 +17,16 @@
 
 package autosaveworld.core.logging;
 
-import java.io.FileDescriptor;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.PrintStream;
-import java.io.PrintWriter;
-import java.io.SyncFailedException;
-import java.io.Writer;
-import java.util.logging.Level;
-
+import autosaveworld.core.AutoSaveWorld;
+import autosaveworld.utils.BukkitUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.event.player.AsyncPlayerPreLoginEvent;
 import org.bukkit.event.player.PlayerLoginEvent;
 
-import autosaveworld.core.AutoSaveWorld;
-import autosaveworld.utils.BukkitUtils;
+import java.io.*;
+import java.util.logging.Level;
 
 public class MessageLogger {
 
@@ -53,10 +46,10 @@ public class MessageLogger {
 				sender.sendMessage(new String(cbuf, off, len));
 			}
 			@Override
-			public void flush() throws IOException {
+			public void flush() {
 			}
 			@Override
-			public void close() throws IOException {
+			public void close() {
 			}
 		}));
 	}
@@ -103,7 +96,7 @@ public class MessageLogger {
 		t.printStackTrace(outstream);
 		try {
 			FileDescriptor.err.sync();
-		} catch (SyncFailedException e) {
+		} catch (SyncFailedException ignored) {
 		}
 	}
 
@@ -112,7 +105,7 @@ public class MessageLogger {
 			outstream.println("[AutoSaveWorld] "+message);
 			try {
 				FileDescriptor.err.sync();
-			} catch (SyncFailedException e) {
+			} catch (SyncFailedException ignored) {
 			}
 		}
 	}

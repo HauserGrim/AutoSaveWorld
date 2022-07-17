@@ -17,12 +17,12 @@
 
 package autosaveworld.features.backup.script;
 
-import java.io.File;
-
 import autosaveworld.config.AutoSaveWorldConfig;
 import autosaveworld.core.AutoSaveWorld;
 import autosaveworld.core.logging.MessageLogger;
 import autosaveworld.features.backup.Backup;
+
+import java.io.File;
 
 public class ScriptBackup extends Backup {
 

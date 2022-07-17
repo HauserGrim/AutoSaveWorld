@@ -17,6 +17,14 @@
 
 package autosaveworld.features.backup.utils.virtualfilesystem;
 
+import autosaveworld.core.GlobalConstants;
+import autosaveworld.core.logging.MessageLogger;
+import autosaveworld.features.backup.BackupUtils;
+import autosaveworld.features.backup.InputStreamFactory;
+import autosaveworld.features.backup.utils.PipedZip;
+import org.bukkit.Bukkit;
+import org.bukkit.World;
+
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
@@ -30,29 +38,20 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
-import org.bukkit.Bukkit;
-import org.bukkit.World;
-
-import autosaveworld.core.GlobalConstants;
-import autosaveworld.core.logging.MessageLogger;
-import autosaveworld.features.backup.BackupUtils;
-import autosaveworld.features.backup.InputStreamFactory;
-import autosaveworld.features.backup.utils.PipedZip;
-
 public class VirtualBackupManager {
 
 	public static Builder builder() {
 		return new Builder();
 	}
 
-	private String backuppath;
-	private List<String> worlds;
-	private boolean backupplugins;
-	private List<String> otherfolders;
-	private List<String> excludefolders;
-	private int maxbackups;
-	private boolean zip;
-	private VirtualFileSystem vfs;
+	private final String backuppath;
+	private final List<String> worlds;
+	private final boolean backupplugins;
+	private final List<String> otherfolders;
+	private final List<String> excludefolders;
+	private final int maxbackups;
+	private final boolean zip;
+	private final VirtualFileSystem vfs;
 
 	private VirtualBackupManager(String backuppath, List<String> worlds, boolean backupplugins, List<String> otherfolders, List<String> excludefolders, int maxbackups, boolean zip, VirtualFileSystem vfs) {
 		this.backuppath = backuppath;
@@ -112,7 +111,7 @@ public class VirtualBackupManager {
 
 
 	private void uploadDirectory(File src)  throws IOException {
-		Files.walkFileTree(src.toPath(), new FileVisitor<Path>() {
+		Files.walkFileTree(src.toPath(), new FileVisitor<>() {
 			@Override
 			public FileVisitResult preVisitDirectory(Path dir, BasicFileAttributes attrs) throws IOException {
 				if (BackupUtils.isFolderExcluded(excludefolders, dir.toString())) {
@@ -131,7 +130,7 @@ public class VirtualBackupManager {
 			}
 
 			@Override
-			public FileVisitResult visitFileFailed(Path file, IOException exc) throws IOException {
+			public FileVisitResult visitFileFailed(Path file, IOException exc) {
 				return FileVisitResult.CONTINUE;
 			}
 
@@ -156,7 +155,7 @@ public class VirtualBackupManager {
 			MessageLogger.exception("Failed to backup file: " + filename, e);
 			try {
 				vfs.deleteFile(filename);
-			} catch (IOException ex) {
+			} catch (IOException ignored) {
 			}
 		}
 	}
@@ -188,7 +187,7 @@ public class VirtualBackupManager {
 
 		public Builder setWorldList(List<String> worlds) {
 			check();
-			this.worlds = new ArrayList<String>(worlds);
+			this.worlds = new ArrayList<>(worlds);
 			allset |= 2;
 			return this;
 		}
@@ -202,14 +201,14 @@ public class VirtualBackupManager {
 
 		public Builder setOtherFolders(List<String> otherfoldes) {
 			check();
-			this.otherfolders = new ArrayList<String>(otherfoldes);
+			this.otherfolders = new ArrayList<>(otherfoldes);
 			allset |= 8;
 			return this;
 		}
 
 		public Builder setExcludedFolders(List<String> excludedfolders) {
 			check();
-			this.excludefolders = new ArrayList<String>(excludedfolders);
+			this.excludefolders = new ArrayList<>(excludedfolders);
 			allset |= 16;
 			return this;
 		}

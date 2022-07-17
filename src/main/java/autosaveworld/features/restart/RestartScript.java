@@ -17,6 +17,8 @@
 
 package autosaveworld.features.restart;
 
+import autosaveworld.utils.StringUtils;
+
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -25,12 +27,10 @@ import java.lang.management.ManagementFactory;
 import java.util.ArrayList;
 import java.util.List;
 
-import autosaveworld.utils.StringUtils;
-
 public class RestartScript {
 
 	public static File createScript(List<String> command) throws IOException {
-		command = new ArrayList<String>(command);
+		command = new ArrayList<>(command);
 		command.set(0, escape(command.get(0)));
 		if (isUnix()) {
 			return createUnixRestartScrpt(command);

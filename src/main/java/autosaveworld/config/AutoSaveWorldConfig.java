@@ -17,12 +17,6 @@
 
 package autosaveworld.config;
 
-import java.io.File;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
 import autosaveworld.config.loader.Config;
 import autosaveworld.config.loader.ConfigOption;
 import autosaveworld.config.loader.postload.AstListAppend;
@@ -33,6 +27,12 @@ import autosaveworld.config.loader.transform.ConfSectStringHashMap;
 import autosaveworld.config.loader.transform.ListClone;
 import autosaveworld.core.GlobalConstants;
 
+import java.io.File;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 public class AutoSaveWorldConfig implements Config {
 
 	// some global variables
@@ -40,17 +40,6 @@ public class AutoSaveWorldConfig implements Config {
 	public boolean varDebug = false;
 	@ConfigOption(path = "var.commandsonlyfromconsole")
 	public boolean commandOnlyFromConsole = false;
-	// save
-	@ConfigOption(path = "save.interval")
-	public int saveInterval = 900;
-	@ConfigOption(path = "save.broadcast")
-	public boolean saveBroadcast = true;
-	@ConfigOption(path = "save.disablestructuresaving")
-	public boolean saveDisableStructureSaving = false;
-	@ConfigOption(path = "save.forceregioncachedump")
-	public boolean saveDumpRegionCache = true;
-	@ConfigOption(path = "save.onplugindisable")
-	public boolean saveOnASWDisable = true;
 	// backup
 	@ConfigOption(path = "backup.enabled")
 	public boolean backupEnabled = false;
@@ -58,8 +47,6 @@ public class AutoSaveWorldConfig implements Config {
 	public int backupInterval = 60 * 60 * 6;
 	@ConfigOption(path = "backup.broadcast")
 	public boolean backupBroadcast = true;
-	@ConfigOption(path = "backup.savebefore")
-	public boolean backupsaveBefore = true;
 	@ConfigOption(path = "backup.rateLimit")
 	public long backupRateLimit = -1;
 	// localfs backup
@@ -199,16 +186,10 @@ public class AutoSaveWorldConfig implements Config {
 	public boolean purgeWGRegenRg = false;
 	@ConfigOption(path = "purge.wg.noregenoverlapregion")
 	public boolean purgeWGNoregenOverlap = true;
-	@ConfigOption(path = "purge.lwc.enabled")
-	public boolean purgeLWC = true;
-	@ConfigOption(path = "purge.lwc.deletepurgedblocks")
-	public boolean purgeLWCDelProtectedBlocks = false;
+	@ConfigOption(path = "purge.wg.removeusers")
+	public boolean purgeWGRemoveUsers = true;
 	@ConfigOption(path = "purge.permissions.enabled")
 	public boolean purgePerms = true;
-	@ConfigOption(path = "purge.permissions.savecmd")
-	public String purgePermsSaveCMD = "mansave force";
-	@ConfigOption(path = "purge.mywarp.enabled")
-	public boolean purgeMyWarp = true;
 	@ConfigOption(path = "purge.essentials.enabled")
 	public boolean purgeEssentials = true;
 	@ConfigOption(path = "purge.dat.enabled")
@@ -256,14 +237,10 @@ public class AutoSaveWorldConfig implements Config {
 	public int worldRegenPreserveRadius = 0;
 	@ConfigOption(path = "worldregen.savewg")
 	public boolean worldRegenSaveWG = true;
-	@ConfigOption(path = "worldregen.savefactions")
-	public boolean worldRegenSaveFactions = true;
 	@ConfigOption(path = "worldregen.savegp")
 	public boolean worldRegenSaveGP = true;
 	@ConfigOption(path = "worldregen.savetowny")
 	public boolean worldregenSaveTowny = true;
-	@ConfigOption(path = "worldregen.savepstones")
-	public boolean worldregenSavePStones = true;
 	// network watcher
 	@ConfigOption(path = "networkwatcher.mainthreadnetaccess.warn")
 	public boolean networkWatcherWarnMainThreadAcc = true;

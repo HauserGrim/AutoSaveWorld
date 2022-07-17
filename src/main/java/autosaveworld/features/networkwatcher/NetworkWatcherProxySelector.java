@@ -17,6 +17,13 @@
 
 package autosaveworld.features.networkwatcher;
 
+import autosaveworld.config.AutoSaveWorldConfig;
+import autosaveworld.core.AutoSaveWorld;
+import autosaveworld.core.logging.MessageLogger;
+import autosaveworld.utils.ReflectionUtils;
+import org.bukkit.Bukkit;
+import org.bukkit.plugin.Plugin;
+
 import java.io.IOException;
 import java.net.Proxy;
 import java.net.ProxySelector;
@@ -24,14 +31,6 @@ import java.net.SocketAddress;
 import java.net.URI;
 import java.util.HashMap;
 import java.util.List;
-
-import org.bukkit.Bukkit;
-import org.bukkit.plugin.Plugin;
-
-import autosaveworld.config.AutoSaveWorldConfig;
-import autosaveworld.core.AutoSaveWorld;
-import autosaveworld.core.logging.MessageLogger;
-import autosaveworld.utils.ReflectionUtils;
 
 public class NetworkWatcherProxySelector extends ProxySelector {
 
@@ -74,21 +73,20 @@ public class NetworkWatcherProxySelector extends ProxySelector {
 	private Plugin getRequestingPlugin() {
 		HashMap<ClassLoader, Plugin> map = getClassloaderToPluginMap();
 		StackTraceElement[] stacktrace = new Exception().getStackTrace();
-		for (int i = 0; i < stacktrace.length; i++) {
-			StackTraceElement element = stacktrace[i];
+		for (StackTraceElement element : stacktrace) {
 			try {
 				ClassLoader loader = Class.forName(element.getClassName(), false, getClass().getClassLoader()).getClassLoader();
 				if (map.containsKey(loader)) {
 					return map.get(loader);
 				}
-			} catch (ClassNotFoundException e) {
+			} catch (ClassNotFoundException ignored) {
 			}
 		}
 		return null;
 	}
 
 	private HashMap<ClassLoader, Plugin> getClassloaderToPluginMap() {
-		HashMap<ClassLoader, Plugin> map = new HashMap<ClassLoader, Plugin>();
+		HashMap<ClassLoader, Plugin> map = new HashMap<>();
 		for (Plugin plugin : Bukkit.getPluginManager().getPlugins()) {
 			map.put(plugin.getClass().getClassLoader(), plugin);
 		}

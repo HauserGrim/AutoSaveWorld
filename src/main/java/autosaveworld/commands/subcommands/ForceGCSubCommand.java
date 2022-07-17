@@ -17,14 +17,13 @@
 
 package autosaveworld.commands.subcommands;
 
+import autosaveworld.commands.ISubCommand;
+import autosaveworld.core.logging.MessageLogger;
+import org.bukkit.command.CommandSender;
+
 import java.lang.management.ManagementFactory;
 import java.util.Collections;
 import java.util.List;
-
-import org.bukkit.command.CommandSender;
-
-import autosaveworld.commands.ISubCommand;
-import autosaveworld.core.logging.MessageLogger;
 
 public class ForceGCSubCommand implements ISubCommand {
 

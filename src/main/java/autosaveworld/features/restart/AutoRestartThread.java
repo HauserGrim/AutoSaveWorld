@@ -17,9 +17,6 @@
 
 package autosaveworld.features.restart;
 
-import java.io.File;
-import java.text.SimpleDateFormat;
-
 import autosaveworld.commands.subcommands.StopCommand;
 import autosaveworld.config.AutoSaveWorldConfig;
 import autosaveworld.core.AutoSaveWorld;
@@ -27,6 +24,9 @@ import autosaveworld.core.logging.MessageLogger;
 import autosaveworld.utils.BukkitUtils;
 import autosaveworld.utils.SchedulerUtils;
 import autosaveworld.utils.Threads.SIntervalTaskThread;
+
+import java.io.File;
+import java.text.SimpleDateFormat;
 
 public class AutoRestartThread extends SIntervalTaskThread {
 
@@ -47,7 +47,7 @@ public class AutoRestartThread extends SIntervalTaskThread {
 		// wait 1 minute before starting (server can restart faster than 1 minute. Without this check AutoRestartThread will stop working after restart)
 		try {
 			Thread.sleep(61000);
-		} catch (InterruptedException e) {
+		} catch (InterruptedException ignored) {
 		}
 	}
 
@@ -72,7 +72,7 @@ public class AutoRestartThread extends SIntervalTaskThread {
 				}
 				try {
 					Thread.sleep(1000);
-				} catch (InterruptedException e) {
+				} catch (InterruptedException ignored) {
 				}
 			}
 		}
@@ -85,12 +85,9 @@ public class AutoRestartThread extends SIntervalTaskThread {
 			Runtime.getRuntime().addShutdownHook(new RestartShutdownHook(new File(config.autoRestartScriptPath)));
 		}
 
-		SchedulerUtils.callSyncTaskAndWait(new Runnable() {
-			@Override
-			public void run() {
-				for (String command : config.autoRestartPreStopCommmands) {
-					BukkitUtils.dispatchCommandAsConsole(command);
-				}
+		SchedulerUtils.callSyncTaskAndWait(() -> {
+			for (String command : config.autoRestartPreStopCommmands) {
+				BukkitUtils.dispatchCommandAsConsole(command);
 			}
 		}, 10);
 

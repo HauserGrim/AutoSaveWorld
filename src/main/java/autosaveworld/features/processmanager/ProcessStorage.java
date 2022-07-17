@@ -22,7 +22,7 @@ import java.util.HashSet;
 
 public class ProcessStorage {
 
-	private HashMap<String, RunningProcess> processes = new HashMap<String, RunningProcess>();
+	private final HashMap<String, RunningProcess> processes = new HashMap<>();
 
 	public void registerProcess(String name, RunningProcess pr) {
 		processes.put(name, pr);
@@ -37,7 +37,7 @@ public class ProcessStorage {
 	}
 
 	public HashSet<String> getRegisteredProcesses() {
-		return new HashSet<String>(processes.keySet());
+		return new HashSet<>(processes.keySet());
 	}
 
 }

@@ -19,8 +19,8 @@ package autosaveworld.features.purge.taskqueue;
 
 public interface Task {
 
-	public boolean doNotQueue();
+	boolean doNotQueue();
 
-	public void performTask();
+	void performTask();
 
 }

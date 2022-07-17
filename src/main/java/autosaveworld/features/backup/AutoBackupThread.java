@@ -17,9 +17,6 @@
 
 package autosaveworld.features.backup;
 
-import java.text.MessageFormat;
-import java.util.ArrayList;
-
 import autosaveworld.config.AutoSaveWorldConfig;
 import autosaveworld.core.AutoSaveWorld;
 import autosaveworld.core.logging.MessageLogger;
@@ -31,16 +28,13 @@ import autosaveworld.features.backup.script.ScriptBackup;
 import autosaveworld.features.backup.sftp.SFTPBackup;
 import autosaveworld.utils.Threads.IntervalTaskThread;
 
+import java.text.MessageFormat;
+import java.util.ArrayList;
+
 public class AutoBackupThread extends IntervalTaskThread {
 
 	public AutoBackupThread() {
 		super("AutoBackupThread");
-	}
-
-	private boolean backupRunning = false;
-
-	public boolean isBackupInProcess() {
-		return backupRunning;
 	}
 
 	@Override
@@ -54,21 +48,12 @@ public class AutoBackupThread extends IntervalTaskThread {
 	}
 
 	@Override
-	public void doTask() throws Exception {
-		backupRunning = true;
-		try {
-			performBackup();
-		} finally {
-			backupRunning = false;
-		}
+	public void doTask() {
+		performBackup();
 	}
 
-	public void performBackup() throws Exception {
+	public void performBackup() {
 		AutoSaveWorldConfig config = AutoSaveWorld.getInstance().getMainConfig();
-
-		if (config.backupsaveBefore) {
-			AutoSaveWorld.getInstance().getSaveThread().performSave();
-		}
 
 		long timestart = System.currentTimeMillis();
 
@@ -76,7 +61,7 @@ public class AutoBackupThread extends IntervalTaskThread {
 
 		InputStreamFactory.setRateLimit(config.backupRateLimit);
 
-		ArrayList<Backup> backups = new ArrayList<Backup>();
+		ArrayList<Backup> backups = new ArrayList<>();
 
 		if (config.backupLFSEnabled) {
 			backups.add(new LocalFSBackup());

@@ -17,10 +17,9 @@
 
 package autosaveworld.features.processmanager;
 
-import org.bukkit.command.CommandSender;
-
 import autosaveworld.core.logging.MessageLogger;
 import autosaveworld.utils.StringUtils;
+import org.bukkit.command.CommandSender;
 
 public class ProcessManager {
 
@@ -40,7 +39,7 @@ public class ProcessManager {
 		}
 	}
 
-	private ProcessStorage storage = new ProcessStorage();
+	private final ProcessStorage storage = new ProcessStorage();
 
 	private void runProcess(CommandSender sender, String prname, String[] args) {
 		if (prname == null) {

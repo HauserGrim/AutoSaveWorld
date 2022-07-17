@@ -17,18 +17,11 @@
 
 package autosaveworld.features.pluginmanager;
 
-import java.io.File;
-import java.io.IOException;
-import java.lang.reflect.Field;
-import java.lang.reflect.Method;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
-import java.util.jar.JarEntry;
-import java.util.jar.JarFile;
-
+import autosaveworld.core.GlobalConstants;
+import autosaveworld.core.logging.MessageLogger;
+import autosaveworld.utils.FileUtils;
+import autosaveworld.utils.ReflectionUtils;
+import autosaveworld.utils.StringUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandMap;
@@ -38,11 +31,13 @@ import org.bukkit.plugin.InvalidDescriptionException;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.PluginDescriptionFile;
 
-import autosaveworld.core.GlobalConstants;
-import autosaveworld.core.logging.MessageLogger;
-import autosaveworld.utils.FileUtils;
-import autosaveworld.utils.ReflectionUtils;
-import autosaveworld.utils.StringUtils;
+import java.io.File;
+import java.io.IOException;
+import java.lang.reflect.Field;
+import java.lang.reflect.Method;
+import java.util.*;
+import java.util.jar.JarEntry;
+import java.util.jar.JarFile;
 
 public class PluginManager {
 
@@ -50,45 +45,21 @@ public class PluginManager {
 
 	public void handlePluginManagerCommand(CommandSender sender, String command, String arg) {
 		switch (command.toLowerCase()) {
-			case "load": {
-				loadPlugin(sender, arg);
-				break;
-			}
-			case "unload": {
-				unloadPlugin(sender, arg, false);
-				break;
-			}
-			case "funload": {
-				unloadPlugin(sender, arg, true);
-				break;
-			}
-			case "reload": {
-				reloadPlugin(sender, arg, false);
-				break;
-			}
-			case "freload": {
-				reloadPlugin(sender, arg, true);
-				break;
-			}
-			case "removeperm": {
-				removePermissions(sender, arg.split("[ ]"));
-				break;
-			}
-			case "findcommand": {
-				findCommand(sender, arg);
-				break;
-			}
-			default: {
-				MessageLogger.sendMessage(sender, "Invalid plugin manager command");
-				break;
-			}
+			case "load" -> loadPlugin(sender, arg);
+			case "unload" -> unloadPlugin(sender, arg, false);
+			case "funload" -> unloadPlugin(sender, arg, true);
+			case "reload" -> reloadPlugin(sender, arg, false);
+			case "freload" -> reloadPlugin(sender, arg, true);
+			case "removeperm" -> removePermissions(sender, arg.split("[ ]"));
+			case "findcommand" -> findCommand(sender, arg);
+			default -> MessageLogger.sendMessage(sender, "Invalid plugin manager command");
 		}
 	}
 
-	private final List<String> cmds = Arrays.asList(new String[] {"load", "unload", "funload", "reload", "freload", "removeperm", "findcommand"});
-	public List<String> getTabComplete(CommandSender sender, String[] args) {
+	private final List<String> cmds = Arrays.asList("load", "unload", "funload", "reload", "freload", "removeperm", "findcommand");
+	public List<String> getTabComplete(String[] args) {
 		if (args.length == 1) {
-			ArrayList<String> result = new ArrayList<String>();
+			ArrayList<String> result = new ArrayList<>();
 			for (String command : cmds) {
 				if (command.startsWith(args[0])) {
 					result.add(command);
@@ -99,7 +70,7 @@ public class PluginManager {
 		if (args.length >= 2) {
 			if (args[0].equalsIgnoreCase("unload") || args[0].equalsIgnoreCase("reload")) {
 				String input = StringUtils.join(Arrays.copyOfRange(args, 1, args.length), " ");
-				ArrayList<String> result = new ArrayList<String>();
+				ArrayList<String> result = new ArrayList<>();
 				for (Plugin plugin : Bukkit.getPluginManager().getPlugins()) {
 					if (plugin.getName().startsWith(input) && getOtherDependingPlugins(plugin).isEmpty()) {
 						result.add(plugin.getName());
@@ -109,7 +80,7 @@ public class PluginManager {
 			}
 			if (args[0].equalsIgnoreCase("funload") || args[0].equalsIgnoreCase("freload")) {
 				String input = StringUtils.join(Arrays.copyOfRange(args, 1, args.length), " ");
-				ArrayList<String> result = new ArrayList<String>();
+				ArrayList<String> result = new ArrayList<>();
 				for (Plugin plugin : Bukkit.getPluginManager().getPlugins()) {
 					if (plugin.getName().startsWith(input)) {
 						result.add(plugin.getName());
@@ -119,7 +90,7 @@ public class PluginManager {
 			}
 			if (args[0].equalsIgnoreCase("load")) {
 				String input = StringUtils.join(Arrays.copyOfRange(args, 1, args.length), " ");
-				ArrayList<String> result = new ArrayList<String>();
+				ArrayList<String> result = new ArrayList<>();
 				for (File pluginfile : FileUtils.safeListFiles(GlobalConstants.getPluginsFolder())) {
 					String pluginName = getPluginName(pluginfile);
 					if (
@@ -211,7 +182,7 @@ public class PluginManager {
 		if (!force) {
 			List<String> depending = getOtherDependingPlugins(pmplugin);
 			if (!depending.isEmpty()) {
-				MessageLogger.sendMessage(sender, "Found other plugins that depend on this one, disable them first: "+StringUtils.join(depending.toArray(new String[depending.size()]), ", "));
+				MessageLogger.sendMessage(sender, "Found other plugins that depend on this one, disable them first: "+StringUtils.join(depending.toArray(new String[0]), ", "));
 				return;
 			}
 		}
@@ -236,7 +207,7 @@ public class PluginManager {
 		if (!force) {
 			List<String> depending = getOtherDependingPlugins(pmplugin);
 			if (!depending.isEmpty()) {
-				MessageLogger.sendMessage(sender, "Found other plugins that depend on this one, disable them first: "+StringUtils.join(depending.toArray(new String[depending.size()]), ", "));
+				MessageLogger.sendMessage(sender, "Found other plugins that depend on this one, disable them first: "+StringUtils.join(depending.toArray(new String[0]), ", "));
 				return;
 			}
 		}
@@ -287,8 +258,7 @@ public class PluginManager {
 					jarFile.close();
 					return jarpluginName;
 				}
-				jarFile.close();
-			} catch (IOException | InvalidDescriptionException e) {
+			} catch (IOException | InvalidDescriptionException ignored) {
 			}
 		}
 		return null;
@@ -296,7 +266,7 @@ public class PluginManager {
 
 
 	private List<String> getOtherDependingPlugins(Plugin plugin) {
-		ArrayList<String> others = new ArrayList<String>();
+		ArrayList<String> others = new ArrayList<>();
 		for (Plugin otherplugin : Bukkit.getPluginManager().getPlugins()) {
 			PluginDescriptionFile descfile = otherplugin.getDescription();
 			if (

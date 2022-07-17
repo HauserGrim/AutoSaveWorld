@@ -1,16 +1,15 @@
 package autosaveworld.utils;
 
-import java.lang.reflect.Method;
-import java.util.Arrays;
-import java.util.Collection;
-
+import autosaveworld.core.AutoSaveWorld;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.HandlerList;
 import org.bukkit.event.Listener;
 import org.bukkit.event.server.ServerCommandEvent;
 
-import autosaveworld.core.AutoSaveWorld;
+import java.lang.reflect.Method;
+import java.util.Arrays;
+import java.util.Collection;
 
 public class BukkitUtils {
 

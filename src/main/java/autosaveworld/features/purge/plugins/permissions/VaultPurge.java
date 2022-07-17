@@ -17,15 +17,14 @@
 
 package autosaveworld.features.purge.plugins.permissions;
 
-import org.bukkit.Bukkit;
-import org.bukkit.OfflinePlayer;
-import org.bukkit.World;
-
 import autosaveworld.features.purge.ActivePlayersList;
 import autosaveworld.features.purge.DataPurge;
 import autosaveworld.features.purge.taskqueue.Task;
 import autosaveworld.features.purge.taskqueue.TaskExecutor;
 import net.milkbowl.vault.permission.Permission;
+import org.bukkit.Bukkit;
+import org.bukkit.OfflinePlayer;
+import org.bukkit.World;
 
 public class VaultPurge extends DataPurge {
 
@@ -47,7 +46,7 @@ public class VaultPurge extends DataPurge {
 						@Override
 						public void performTask() {
 							for (String group : permission.getGroups()) {
-								permission.playerRemoveGroup((String) null, player, group);
+								permission.playerRemoveGroup(null, player, group);
 								for (World world : Bukkit.getWorlds()) {
 									permission.playerRemoveGroup(world.getName(), player, group);
 								}

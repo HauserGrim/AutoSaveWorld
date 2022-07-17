@@ -17,29 +17,18 @@
 
 package autosaveworld.features.backup.localfs;
 
-import java.io.File;
-import java.io.IOException;
-import java.util.List;
-
-import org.bukkit.World;
-
 import autosaveworld.core.GlobalConstants;
 import autosaveworld.core.logging.MessageLogger;
 import autosaveworld.features.backup.BackupUtils;
 import autosaveworld.features.backup.utils.ZipUtils;
 import autosaveworld.utils.FileUtils;
+import org.bukkit.World;
 
-public class LocalFSBackupOperations {
+import java.io.File;
+import java.io.IOException;
+import java.util.List;
 
-	private boolean zip;
-	private String extpath;
-	private List<String> excludefolders;
-
-	public LocalFSBackupOperations(boolean zip, String extpath, List<String> excludefolders) {
-		this.zip = zip;
-		this.extpath = extpath;
-		this.excludefolders = excludefolders;
-	}
+public record LocalFSBackupOperations(boolean zip, String extpath, List<String> excludefolders) {
 
 	public void backupWorld(World world, int maxBackupsCount, String latestbackuptimestamp) {
 		MessageLogger.debug("Backuping world " + world.getWorldFolder().getName());

@@ -22,8 +22,8 @@ import java.io.InputStream;
 
 public class RateLimitedInputStream extends InputStream {
 
-	private InputStream inputstream;
-	private long bytesperms;
+	private final InputStream inputstream;
+	private final long bytesperms;
 
 	public RateLimitedInputStream(InputStream inputstream, long kbps) {
 		this.inputstream = inputstream;
@@ -43,7 +43,7 @@ public class RateLimitedInputStream extends InputStream {
 		if ((bytesRead + bytesToRead) > (readTime * bytesperms)) {
 			try {
 				Thread.sleep(((bytesRead + bytesToRead) / bytesperms) - readTime);
-			} catch (InterruptedException e) {
+			} catch (InterruptedException ignored) {
 			}
 		}
 		bytesRead += bytesToRead;

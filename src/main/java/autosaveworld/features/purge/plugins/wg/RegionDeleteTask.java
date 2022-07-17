@@ -17,24 +17,15 @@
 
 package autosaveworld.features.purge.plugins.wg;
 
-import org.bukkit.World;
-
-import com.sk89q.worldguard.bukkit.WGBukkit;
-import com.sk89q.worldguard.protection.managers.RegionManager;
-import com.sk89q.worldguard.protection.regions.ProtectedRegion;
-
 import autosaveworld.core.logging.MessageLogger;
 import autosaveworld.features.purge.taskqueue.Task;
+import com.sk89q.worldedit.bukkit.BukkitAdapter;
+import com.sk89q.worldguard.WorldGuard;
+import com.sk89q.worldguard.protection.managers.RegionManager;
+import com.sk89q.worldguard.protection.regions.ProtectedRegion;
+import org.bukkit.World;
 
-public class RegionDeleteTask implements Task {
-
-	private World world;
-	private ProtectedRegion region;
-
-	public RegionDeleteTask(World world, ProtectedRegion region) {
-		this.world = world;
-		this.region = region;
-	}
+public record RegionDeleteTask(World world, ProtectedRegion region) implements Task {
 
 	@Override
 	public boolean doNotQueue() {
@@ -43,7 +34,7 @@ public class RegionDeleteTask implements Task {
 
 	@Override
 	public void performTask() {
-		RegionManager rm = WGBukkit.getRegionManager(world);
+		RegionManager rm = WorldGuard.getInstance().getPlatform().getRegionContainer().get(BukkitAdapter.adapt(world));
 		MessageLogger.debug("Deleting region " + region.getId());
 		rm.removeRegion(region.getId());
 	}

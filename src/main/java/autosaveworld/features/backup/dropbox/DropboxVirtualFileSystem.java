@@ -17,6 +17,12 @@
 
 package autosaveworld.features.backup.dropbox;
 
+import autosaveworld.features.backup.utils.virtualfilesystem.VirtualFileSystem;
+import autosaveworld.utils.StringUtils;
+import com.dropbox.core.DbxException;
+import com.dropbox.core.v2.DbxClientV2;
+import com.dropbox.core.v2.files.*;
+
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -24,35 +30,23 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Set;
 
-import autosaveworld.features.backup.utils.virtualfilesystem.VirtualFileSystem;
-import autosaveworld.utils.StringUtils;
-import autosaveworld.zlibs.com.dropbox.core.DbxException;
-import autosaveworld.zlibs.com.dropbox.core.v2.DbxClientV2;
-import autosaveworld.zlibs.com.dropbox.core.v2.files.CommitInfo;
-import autosaveworld.zlibs.com.dropbox.core.v2.files.FolderMetadata;
-import autosaveworld.zlibs.com.dropbox.core.v2.files.GetMetadataErrorException;
-import autosaveworld.zlibs.com.dropbox.core.v2.files.ListFolderResult;
-import autosaveworld.zlibs.com.dropbox.core.v2.files.Metadata;
-import autosaveworld.zlibs.com.dropbox.core.v2.files.UploadSessionCursor;
-import autosaveworld.zlibs.com.dropbox.core.v2.files.UploadSessionStartResult;
-
 public class DropboxVirtualFileSystem extends VirtualFileSystem {
 
 	private final DbxClientV2 dbxclient;
-	private final ArrayList<String> currentpath = new ArrayList<String>();
+	private final ArrayList<String> currentpath = new ArrayList<>();
 	public DropboxVirtualFileSystem(DbxClientV2 dbxclient) {
 		this.dbxclient = dbxclient;
 	}
 
 	@Override
-	public void enterDirectory0(String dirname) throws IOException {
+	public void enterDirectory0(String dirname) {
 		currentpath.add(dirname);
 	}
 
 	@Override
 	public void createDirectory0(String dirname) throws IOException {
 		try {
-			dbxclient.files().createFolder(getPath(dirname));
+			dbxclient.files().createFolderV2(getPath(dirname));
 		} catch (DbxException e) {
 			throw wrapException(e);
 		}
@@ -109,7 +103,7 @@ public class DropboxVirtualFileSystem extends VirtualFileSystem {
 	@Override
 	public Set<String> getEntries() throws IOException {
 		try {
-			HashSet<String> files = new HashSet<String>();
+			HashSet<String> files = new HashSet<>();
 			String path = getPath(null);
 
 			ListFolderResult result = dbxclient.files().listFolder(path);
@@ -149,7 +143,7 @@ public class DropboxVirtualFileSystem extends VirtualFileSystem {
 
 	private void delete(String name) throws IOException {
 		try {
-			dbxclient.files().delete(getPath(name));
+			dbxclient.files().deleteV2(getPath(name));
 		} catch (DbxException e) {
 			throw wrapException(e);
 		}

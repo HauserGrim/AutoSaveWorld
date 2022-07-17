@@ -17,18 +17,17 @@
 
 package autosaveworld.commands.subcommands;
 
-import java.io.File;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-
+import autosaveworld.commands.ISubCommand;
+import autosaveworld.core.logging.MessageLogger;
+import autosaveworld.features.worldregen.WorldRegenThread;
 import org.bukkit.Bukkit;
 import org.bukkit.World;
 import org.bukkit.command.CommandSender;
 
-import autosaveworld.commands.ISubCommand;
-import autosaveworld.core.logging.MessageLogger;
-import autosaveworld.features.worldregen.WorldRegenThread;
+import java.io.File;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 public class WorldRegenSubCommand implements ISubCommand {
 
@@ -51,7 +50,7 @@ public class WorldRegenSubCommand implements ISubCommand {
 	@Override
 	public List<String> tabComplete(CommandSender sender, String[] args) {
 		if (args.length == 1) {
-			ArrayList<String> result = new ArrayList<String>();
+			ArrayList<String> result = new ArrayList<>();
 			for (World world : Bukkit.getWorlds()) {
 				if (world.getName().startsWith(args[0])) {
 					result.add(world.getName());

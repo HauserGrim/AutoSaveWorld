@@ -17,15 +17,14 @@
 
 package autosaveworld.commands.subcommands;
 
+import autosaveworld.commands.ISubCommand;
+import org.bukkit.ChatColor;
+import org.bukkit.command.CommandSender;
+
 import java.io.File;
 import java.text.DecimalFormat;
 import java.util.Collections;
 import java.util.List;
-
-import org.bukkit.ChatColor;
-import org.bukkit.command.CommandSender;
-
-import autosaveworld.commands.ISubCommand;
 
 public class ServerStatusSubCommand implements ISubCommand {
 
@@ -41,7 +40,7 @@ public class ServerStatusSubCommand implements ISubCommand {
 			} else {
 				sender.sendMessage(ChatColor.GOLD + "Cpu usage: " + ChatColor.RED + "not available");
 			}
-		} catch (Throwable t) {
+		} catch (Throwable ignored) {
 		}
 		// memory
 		Runtime runtime = Runtime.getRuntime();

@@ -17,16 +17,16 @@
 
 package autosaveworld.commands;
 
-import java.util.List;
-
 import org.bukkit.command.CommandSender;
+
+import java.util.List;
 
 public interface ISubCommand {
 
-	public void handle(CommandSender sender, String[] args);
+	void handle(CommandSender sender, String[] args);
 
-	public List<String> tabComplete(CommandSender sender, String[] args);
+	List<String> tabComplete(CommandSender sender, String[] args);
 
-	public int getMinArguments();
+	int getMinArguments();
 
 }

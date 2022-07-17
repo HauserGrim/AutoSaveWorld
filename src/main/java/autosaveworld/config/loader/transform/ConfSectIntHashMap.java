@@ -17,14 +17,14 @@
 
 package autosaveworld.config.loader.transform;
 
+import org.bukkit.configuration.ConfigurationSection;
+import org.bukkit.configuration.MemorySection;
+import org.bukkit.configuration.file.YamlConfiguration;
+
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
-
-import org.bukkit.configuration.ConfigurationSection;
-import org.bukkit.configuration.MemorySection;
-import org.bukkit.configuration.file.YamlConfiguration;
 
 public class ConfSectIntHashMap implements YamlTransform {
 
@@ -42,11 +42,11 @@ public class ConfSectIntHashMap implements YamlTransform {
 	@Override
 	public Object fromYaml(Object obj) {
 		ConfigurationSection sect = (ConfigurationSection) obj;
-		Map<Integer, List<String>> map = new LinkedHashMap<Integer, List<String>>();
+		Map<Integer, List<String>> map = new LinkedHashMap<>();
 		for (String key : sect.getKeys(false)) {
 			try {
 				map.put(Integer.parseInt(key), sect.getStringList(key));
-			} catch (NumberFormatException e) {
+			} catch (NumberFormatException ignored) {
 			}
 		}
 		return map;

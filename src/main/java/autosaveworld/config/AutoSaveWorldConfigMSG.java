@@ -17,18 +17,14 @@
 
 package autosaveworld.config;
 
-import java.io.File;
-
 import autosaveworld.config.loader.Config;
 import autosaveworld.config.loader.ConfigOption;
 import autosaveworld.core.GlobalConstants;
 
+import java.io.File;
+
 public class AutoSaveWorldConfigMSG implements Config {
 
-	@ConfigOption(path = "broadcast.pre")
-	public String messageSaveBroadcastPre = "&9AutoSaving";
-	@ConfigOption(path = "broadcast.post")
-	public String messageSaveBroadcastPost = "&9AutoSave Complete";
 	@ConfigOption(path = "broadcastbackup.pre")
 	public String messageBackupBroadcastPre = "&9AutoBackuping";
 	@ConfigOption(path = "broadcastbackup.post")

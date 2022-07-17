@@ -17,6 +17,10 @@
 
 package autosaveworld.features.restart;
 
+import autosaveworld.core.logging.MessageLogger;
+import autosaveworld.features.restart.RestartScript.PlatformNotSupportedException;
+import org.bukkit.Bukkit;
+
 import java.io.File;
 import java.io.IOException;
 import java.lang.management.ManagementFactory;
@@ -24,17 +28,14 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import org.bukkit.Bukkit;
-
-import autosaveworld.core.logging.MessageLogger;
-import autosaveworld.features.restart.RestartScript.PlatformNotSupportedException;
-
 public class RestartShutdownHook extends Thread {
 
 	private final File restartscript;
 	public RestartShutdownHook(File restartscript) {
 		this.restartscript = restartscript;
 	}
+
+	public static void init() {}
 
 	public void restart() {
 		RestartWaiter.await();
@@ -49,7 +50,7 @@ public class RestartShutdownHook extends Thread {
 		}
 	}
 
-	private List<String> getRestartCommand() throws IOException {
+	private List<String> getRestartCommand() {
 		try {
 			return Collections.singletonList(RestartScript.createScript(
 				restartScriptExists() ? Collections.singletonList(restartscript.getAbsolutePath()) : getJavaLaunchCommand()
@@ -67,7 +68,7 @@ public class RestartShutdownHook extends Thread {
 		String jarfilename = Bukkit.class.getResource("").getFile();
 		jarfilename = jarfilename.substring(0, jarfilename.indexOf(".jar"));
 		jarfilename = new File(jarfilename).getName() + ".jar";
-		List<String> command = new ArrayList<String>();
+		List<String> command = new ArrayList<>();
 		command.add("java");
 		command.addAll(ManagementFactory.getRuntimeMXBean().getInputArguments());
 		command.add("-jar");

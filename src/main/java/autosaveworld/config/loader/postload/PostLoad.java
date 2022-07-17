@@ -19,6 +19,6 @@ package autosaveworld.config.loader.postload;
 
 public interface PostLoad {
 
-	public void postLoad(Object value);
+	void postLoad(Object value);
 
 }

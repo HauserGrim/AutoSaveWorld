@@ -17,16 +17,15 @@
 
 package autosaveworld.features.worldregen.plugins;
 
+import autosaveworld.features.worldregen.storage.Coord;
+import org.bukkit.World;
+
 import java.util.LinkedList;
 import java.util.List;
 
-import org.bukkit.World;
-
-import autosaveworld.features.worldregen.storage.Coord;
-
 public abstract class DataProvider {
 
-	private final LinkedList<Coord> chunks = new LinkedList<Coord>();
+	private final LinkedList<Coord> chunks = new LinkedList<>();
 
 	protected World world;
 

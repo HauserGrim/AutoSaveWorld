@@ -1,12 +1,11 @@
 package autosaveworld.commands.subcommands;
 
-import java.util.Collections;
-import java.util.List;
-
+import autosaveworld.commands.ISubCommand;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 
-import autosaveworld.commands.ISubCommand;
+import java.util.Collections;
+import java.util.List;
 
 public class StopCommand implements ISubCommand {
 

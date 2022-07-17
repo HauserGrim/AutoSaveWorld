@@ -17,22 +17,21 @@
 
 package autosaveworld.features.purge.plugins.wg;
 
-import java.util.ArrayList;
-import java.util.UUID;
-
-import org.bukkit.Bukkit;
-import org.bukkit.World;
-
-import com.sk89q.worldguard.bukkit.WGBukkit;
-import com.sk89q.worldguard.domains.DefaultDomain;
-import com.sk89q.worldguard.protection.managers.RegionManager;
-import com.sk89q.worldguard.protection.regions.ProtectedRegion;
-
 import autosaveworld.core.AutoSaveWorld;
 import autosaveworld.core.logging.MessageLogger;
 import autosaveworld.features.purge.ActivePlayersList;
 import autosaveworld.features.purge.DataPurge;
 import autosaveworld.features.purge.taskqueue.TaskExecutor;
+import com.sk89q.worldedit.bukkit.BukkitAdapter;
+import com.sk89q.worldguard.WorldGuard;
+import com.sk89q.worldguard.domains.DefaultDomain;
+import com.sk89q.worldguard.protection.managers.RegionManager;
+import com.sk89q.worldguard.protection.regions.ProtectedRegion;
+import org.bukkit.Bukkit;
+import org.bukkit.World;
+
+import java.util.ArrayList;
+import java.util.UUID;
 
 public class WGPurge extends DataPurge {
 
@@ -45,8 +44,8 @@ public class WGPurge extends DataPurge {
 		try (TaskExecutor queue = new TaskExecutor(30)) {
 			for (World w : Bukkit.getWorlds()) {
 				MessageLogger.debug("Checking WG protections in world " + w.getName());
-				RegionManager regionmanager = WGBukkit.getRegionManager(w);
-				ArrayList<ProtectedRegion> regions = new ArrayList<ProtectedRegion>(regionmanager.getRegions().values());
+				RegionManager regionmanager = WorldGuard.getInstance().getPlatform().getRegionContainer().get(BukkitAdapter.adapt(w));
+				ArrayList<ProtectedRegion> regions = new ArrayList<>(regionmanager.getRegions().values());
 				for (ProtectedRegion rg : regions) {
 					MessageLogger.debug("Checking region " + rg.getId());
 					// skip region with zero owners and members
@@ -83,7 +82,7 @@ public class WGPurge extends DataPurge {
 						continue;
 					}
 					// cleanup region default domain if we have something to cleanup
-					if (domainClearTask.hasPlayersToClear()) {
+					if (AutoSaveWorld.getInstance().getMainConfig().purgeWGRemoveUsers && domainClearTask.hasPlayersToClear()) {
 						queue.execute(domainClearTask);
 						incCleaned();
 					}

@@ -17,6 +17,14 @@
 
 package autosaveworld.features.pluginmanager;
 
+import autosaveworld.utils.ReflectionUtils;
+import org.bukkit.Bukkit;
+import org.bukkit.command.Command;
+import org.bukkit.command.CommandMap;
+import org.bukkit.command.PluginIdentifiableCommand;
+import org.bukkit.plugin.PluginManager;
+import org.bukkit.plugin.*;
+
 import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.Field;
@@ -27,22 +35,9 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
-import org.bukkit.Bukkit;
-import org.bukkit.command.Command;
-import org.bukkit.command.CommandMap;
-import org.bukkit.command.PluginIdentifiableCommand;
-import org.bukkit.plugin.InvalidDescriptionException;
-import org.bukkit.plugin.InvalidPluginException;
-import org.bukkit.plugin.Plugin;
-import org.bukkit.plugin.PluginManager;
-import org.bukkit.plugin.UnknownDependencyException;
-
-import autosaveworld.utils.ReflectionUtils;
-
 public class InternalUtils {
 
-	@SuppressWarnings({ "unchecked", "deprecation" })
-	protected void unloadPlugin(Plugin plugin) throws NoSuchFieldException, SecurityException, IllegalArgumentException, IllegalAccessException, IOException, InterruptedException, NoSuchMethodException, InvocationTargetException {
+	protected void unloadPlugin(Plugin plugin) throws NoSuchFieldException, SecurityException, IllegalArgumentException, IllegalAccessException, IOException, InterruptedException, InvocationTargetException {
 		PluginManager pluginmanager = Bukkit.getPluginManager();
 		Class<? extends PluginManager> managerclass = pluginmanager.getClass();
 		ClassLoader pluginClassLoader = plugin.getClass().getClassLoader();
@@ -65,9 +60,8 @@ public class InternalUtils {
 		// remove from commands field
 		CommandMap commandMap = (CommandMap) ReflectionUtils.getField(managerclass, "commandMap").get(pluginmanager);
 		Collection<Command> commands = (Collection<Command>) ReflectionUtils.getMethod(commandMap.getClass(), "getCommands", 0).invoke(commandMap);
-		for (Command cmd : new LinkedList<Command>(commands)) {
-			if (cmd instanceof PluginIdentifiableCommand) {
-				PluginIdentifiableCommand plugincommand = (PluginIdentifiableCommand) cmd;
+		for (Command cmd : new LinkedList<>(commands)) {
+			if (cmd instanceof PluginIdentifiableCommand plugincommand) {
 				if (plugincommand.getPlugin().getName().equalsIgnoreCase(plugin.getName())) {
 					removeCommand(commandMap, commands, cmd);
 				}
@@ -76,8 +70,7 @@ public class InternalUtils {
 			}
 		}
 		// close file in url classloader
-		if (pluginClassLoader instanceof URLClassLoader) {
-			URLClassLoader urlloader = (URLClassLoader) pluginClassLoader;
+		if (pluginClassLoader instanceof URLClassLoader urlloader) {
 			urlloader.close();
 		}
 	}
@@ -95,7 +88,7 @@ public class InternalUtils {
 		}
 	}
 
-	protected void loadPlugin(File pluginfile) throws UnknownDependencyException, InvalidPluginException, InvalidDescriptionException, IllegalArgumentException, IllegalAccessException {
+	protected void loadPlugin(File pluginfile) throws UnknownDependencyException, InvalidPluginException, InvalidDescriptionException, IllegalArgumentException {
 		PluginManager pluginmanager = Bukkit.getPluginManager();
 		// load plugin
 		Plugin plugin = pluginmanager.loadPlugin(pluginfile);

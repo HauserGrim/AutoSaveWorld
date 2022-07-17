@@ -17,16 +17,16 @@
 
 package autosaveworld.features.backup.sftp;
 
+import autosaveworld.features.backup.utils.virtualfilesystem.VirtualFileSystem;
+import com.jcraft.jsch.ChannelSftp;
+import com.jcraft.jsch.ChannelSftp.LsEntry;
+import com.jcraft.jsch.SftpException;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.Vector;
-
-import autosaveworld.features.backup.utils.virtualfilesystem.VirtualFileSystem;
-import autosaveworld.zlibs.com.jcraft.jsch.ChannelSftp;
-import autosaveworld.zlibs.com.jcraft.jsch.ChannelSftp.LsEntry;
-import autosaveworld.zlibs.com.jcraft.jsch.SftpException;
 
 public class SFTPVirtualFileSystem extends VirtualFileSystem {
 
@@ -105,10 +105,10 @@ public class SFTPVirtualFileSystem extends VirtualFileSystem {
 	@Override
 	public Set<String> getEntries() throws IOException {
 		try {
-			HashSet<String> files = new HashSet<String>();
+			HashSet<String> files = new HashSet<>();
 			Vector<LsEntry> names = sftpclient.ls(".");
-			for (int i = 0; i < names.size(); i++) {
-				String filename = names.get(i).getFilename();
+			for (LsEntry name : names) {
+				String filename = name.getFilename();
 				if (!(filename.equals(".") || filename.equals(".."))) {
 					files.add(filename);
 				}

@@ -17,14 +17,14 @@
 
 package autosaveworld.features.backup.ftp;
 
+import autosaveworld.features.backup.utils.virtualfilesystem.VirtualFileSystem;
+import org.apache.commons.net.ftp.FTPClient;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
-
-import autosaveworld.features.backup.utils.virtualfilesystem.VirtualFileSystem;
-import autosaveworld.zlibs.org.apache.commons.net.ftp.FTPClient;
 
 public class FTPVirtualFileSystem extends VirtualFileSystem {
 
@@ -93,7 +93,7 @@ public class FTPVirtualFileSystem extends VirtualFileSystem {
 
 	@Override
 	public Set<String> getEntries() throws IOException {
-		return new HashSet<String>(Arrays.asList(ftpclient.listNames()));
+		return new HashSet<>(Arrays.asList(ftpclient.listNames()));
 	}
 
 	@Override

@@ -17,13 +17,12 @@
 
 package autosaveworld.config.loader;
 
-import java.io.FileNotFoundException;
-import java.lang.reflect.Field;
-
-import org.bukkit.configuration.file.YamlConfiguration;
-
 import autosaveworld.config.loader.transform.YamlTransform;
 import autosaveworld.core.logging.MessageLogger;
+import org.bukkit.configuration.file.YamlConfiguration;
+
+import java.io.FileNotFoundException;
+import java.lang.reflect.Field;
 
 public class ConfigLoader {
 
@@ -32,13 +31,13 @@ public class ConfigLoader {
 			YamlConfiguration yconfig = new YamlConfiguration();
 			try {
 				yconfig.load(config.getFile());
-			} catch (FileNotFoundException e) {
+			} catch (FileNotFoundException ignored) {
 			}
 			for (Field field : config.getClass().getDeclaredFields()) {
 				field.setAccessible(true);
 				ConfigOption option = field.getAnnotation(ConfigOption.class);
 				if (option != null) {
-					YamlTransform transform = option.transform().newInstance();
+					YamlTransform transform = option.transform().getDeclaredConstructor().newInstance();
 					String path = option.path();
 					Object newvalue = field.get(config);
 					if (yconfig.contains(path)) {
@@ -51,7 +50,7 @@ public class ConfigLoader {
 							}
 						}
 					}
-					option.postload().newInstance().postLoad(newvalue);
+					option.postload().getDeclaredConstructor().newInstance().postLoad(newvalue);
 					field.set(config, newvalue);
 				}
 			}
@@ -67,7 +66,7 @@ public class ConfigLoader {
 				field.setAccessible(true);
 				ConfigOption option = field.getAnnotation(ConfigOption.class);
 				if (option != null) {
-					YamlTransform transform = option.transform().newInstance();
+					YamlTransform transform = option.transform().getDeclaredConstructor().newInstance();
 					yconfig.set(option.path(), transform.toYaml(field.get(config)));
 				}
 			}

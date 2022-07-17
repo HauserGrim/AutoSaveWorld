@@ -17,13 +17,12 @@
 
 package autosaveworld.commands.subcommands;
 
-import java.util.Collections;
-import java.util.List;
-
-import org.bukkit.command.CommandSender;
-
 import autosaveworld.commands.ISubCommand;
 import autosaveworld.core.AutoSaveWorld;
+import org.bukkit.command.CommandSender;
+
+import java.util.Collections;
+import java.util.List;
 
 public class PurgeSubCommand implements ISubCommand {
 

@@ -17,15 +17,14 @@
 
 package autosaveworld.commands.subcommands;
 
-import java.util.Collections;
-import java.util.List;
-
-import org.bukkit.command.CommandSender;
-
 import autosaveworld.commands.ISubCommand;
 import autosaveworld.config.loader.ConfigLoader;
 import autosaveworld.core.AutoSaveWorld;
 import autosaveworld.core.logging.MessageLogger;
+import org.bukkit.command.CommandSender;
+
+import java.util.Collections;
+import java.util.List;
 
 public class ReloadConfigSubCommand implements ISubCommand {
 

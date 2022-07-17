@@ -17,16 +17,15 @@
 
 package autosaveworld.features.purge;
 
-import java.util.HashSet;
-import java.util.List;
-import java.util.UUID;
-
+import autosaveworld.core.logging.MessageLogger;
+import autosaveworld.utils.BukkitUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 
-import autosaveworld.core.logging.MessageLogger;
-import autosaveworld.utils.BukkitUtils;
+import java.util.HashSet;
+import java.util.List;
+import java.util.UUID;
 
 public class ActivePlayersList {
 
@@ -37,8 +36,8 @@ public class ActivePlayersList {
 		this.ignoreUUIDs = ignoreUUIDs;
 	}
 
-	private final HashSet<String> plactiveUUID = new HashSet<String>();
-	private final HashSet<String> plactiveNames = new HashSet<String>();
+	private final HashSet<String> plactiveUUID = new HashSet<>();
+	private final HashSet<String> plactiveNames = new HashSet<>();
 
 	private OfflinePlayer[] players;
 

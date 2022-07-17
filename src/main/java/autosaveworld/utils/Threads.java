@@ -55,7 +55,7 @@ public class Threads {
 				}
 				try {
 					Thread.sleep(1000);
-				} catch (InterruptedException e) {
+				} catch (InterruptedException ignored) {
 				}
 			}
 			onStop();
@@ -109,7 +109,7 @@ public class Threads {
 				currentTick++;
 				try {
 					Thread.sleep(1000);
-				} catch (InterruptedException e) {
+				} catch (InterruptedException ignored) {
 				}
 			}
 			onStop();

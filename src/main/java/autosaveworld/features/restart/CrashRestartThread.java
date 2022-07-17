@@ -17,6 +17,15 @@
 
 package autosaveworld.features.restart;
 
+import autosaveworld.commands.subcommands.StopCommand;
+import autosaveworld.core.AutoSaveWorld;
+import autosaveworld.core.logging.MessageLogger;
+import autosaveworld.utils.SchedulerUtils;
+import autosaveworld.utils.Threads.SIntervalTaskThread;
+import org.bukkit.Bukkit;
+import org.bukkit.World;
+import org.bukkit.plugin.Plugin;
+
 import java.io.File;
 import java.lang.management.ManagementFactory;
 import java.lang.management.MonitorInfo;
@@ -29,18 +38,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-
-import org.bukkit.Bukkit;
-import org.bukkit.World;
-import org.bukkit.plugin.Plugin;
-import org.spigotmc.AsyncCatcher;
-
-import autosaveworld.commands.subcommands.StopCommand;
-import autosaveworld.core.AutoSaveWorld;
-import autosaveworld.core.logging.MessageLogger;
-import autosaveworld.utils.SchedulerUtils;
-import autosaveworld.utils.Threads.SIntervalTaskThread;
-import co.aikar.timings.MinecraftTimings;
 
 public class CrashRestartThread extends SIntervalTaskThread {
 
@@ -59,15 +56,10 @@ public class CrashRestartThread extends SIntervalTaskThread {
 		MessageLogger.debug("Delaying crashrestart checker start for " + delay + " seconds");
 		try {
 			Thread.sleep(delay * 1000L);
-		} catch (InterruptedException e) {
+		} catch (InterruptedException ignored) {
 		}
 		// schedule sync task in, this will provide us info about when the last server tick occured
-		SchedulerUtils.scheduleSyncRepeatingTask(new Runnable() {
-			@Override
-			public void run() {
-				syncticktime = System.currentTimeMillis();
-			}
-		}, 0, 20);
+		SchedulerUtils.scheduleSyncRepeatingTask(() -> syncticktime = System.currentTimeMillis(), 0, 20);
 	}
 
 	@Override
@@ -79,7 +71,6 @@ public class CrashRestartThread extends SIntervalTaskThread {
 		(diff >= AutoSaveWorld.getInstance().getMainConfig().restartOnCrashTimeout * 1000L);
 	}
 
-	@SuppressWarnings("deprecation")
 	@Override
 	public void doTask() {
 		stopThread();
@@ -88,7 +79,7 @@ public class CrashRestartThread extends SIntervalTaskThread {
 		log.log(Level.SEVERE, "Server has stopped responding");
 		log.log(Level.SEVERE, "Dumping threads info");
 		log.log(Level.SEVERE, "Main thread");
-		ArrayList<ThreadInfo> threads = new ArrayList<ThreadInfo>(Arrays.asList(ManagementFactory.getThreadMXBean().dumpAllThreads(true, true)));
+		ArrayList<ThreadInfo> threads = new ArrayList<>(Arrays.asList(ManagementFactory.getThreadMXBean().dumpAllThreads(true, true)));
 		ThreadInfo mainthread = extractMainThread(threads);
 		dumpThread(mainthread, log);
 		log.log(Level.SEVERE, "Other threads");
@@ -103,21 +94,11 @@ public class CrashRestartThread extends SIntervalTaskThread {
 		// make sure that we don't trigger restart twice
 		StopCommand.stop();
 		// freeze main thread
-		bukkitMainThread.suspend();
+		bukkitMainThread.checkAccess();
 		// kill main thread, so it will exit all monitors
 		// will have to attempt to kill it while it is still active because plugins code may catch throwables
 		while (bukkitMainThread.isAlive()) {
 			bukkitMainThread.stop();
-		}
-		// disable spigot async catcher
-		try {
-			AsyncCatcher.enabled = false;
-		} catch (Throwable t) {
-		}
-		// disable paper timings so async access doesn't print unneeded exceptions
-		try {
-			MinecraftTimings.stopServer();
-		} catch (Throwable t) {
 		}
 		log.log(Level.SEVERE, "Disabling plugins");
 		// unload plugins

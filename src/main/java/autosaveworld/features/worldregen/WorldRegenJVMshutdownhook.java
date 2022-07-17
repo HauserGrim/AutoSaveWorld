@@ -17,14 +17,14 @@
 
 package autosaveworld.features.worldregen;
 
-import java.util.List;
-
 import autosaveworld.core.logging.MessageLogger;
 import autosaveworld.features.restart.RestartWaiter;
 
+import java.util.List;
+
 public class WorldRegenJVMshutdownhook extends Thread {
 
-	private List<WorldRegenTask> tasks;
+	private final List<WorldRegenTask> tasks;
 
 	public WorldRegenJVMshutdownhook(List<WorldRegenTask> tasks) {
 		this.tasks = tasks;

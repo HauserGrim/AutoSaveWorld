@@ -17,6 +17,12 @@
 
 package autosaveworld.config;
 
+import autosaveworld.config.loader.ConfigLoader;
+import autosaveworld.config.localefiles.LocaleFiles;
+import autosaveworld.core.AutoSaveWorld;
+import autosaveworld.core.GlobalConstants;
+import autosaveworld.core.logging.MessageLogger;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Files;
@@ -27,25 +33,19 @@ import java.util.List;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
-import autosaveworld.config.loader.ConfigLoader;
-import autosaveworld.config.localefiles.LocaleFiles;
-import autosaveworld.core.AutoSaveWorld;
-import autosaveworld.core.GlobalConstants;
-import autosaveworld.core.logging.MessageLogger;
-
 public class LocaleChanger {
 
 	// available locales
 	public List<String> getAvailableLocales() {
 		List<String> locales = new LinkedList<>();
 		// add additional locales based on files in the jar.
-		try (final ZipFile zipFile = new ZipFile(AutoSaveWorld.getInstance().getClass().getProtectionDomain().getCodeSource().getLocation().getFile());) {
+		try (final ZipFile zipFile = new ZipFile(AutoSaveWorld.getInstance().getClass().getProtectionDomain().getCodeSource().getLocation().getFile())) {
 			Enumeration<? extends ZipEntry> entries = zipFile.entries();
 			while (entries.hasMoreElements()) {
 				ZipEntry ze = entries.nextElement();
 				if (!ze.isDirectory() && ze.getName().contains("/")) {
 					String pathname = ze.getName().substring(0, ze.getName().lastIndexOf('/'));
-					String filename = ze.getName().substring(ze.getName().lastIndexOf('/') + 1, ze.getName().length());
+					String filename = ze.getName().substring(ze.getName().lastIndexOf('/') + 1);
 					if (pathname.equalsIgnoreCase(LocaleFiles.getPackageName())) {
 						if (filename.endsWith(".yml") && filename.contains("_")) {
 							locales.add(filename.substring(0, filename.length() - 4).split("[_]")[1]);
@@ -53,7 +53,6 @@ public class LocaleChanger {
 					}
 				}
 			}
-			zipFile.close();
 		} catch (IOException e) {
 			locales.add("Error occured while scanning for available locales");
 		}
@@ -73,7 +72,7 @@ public class LocaleChanger {
 	private void loadLocaleFile(String locale) {
 		try (InputStream is = LocaleFiles.class.getResourceAsStream("configmsg_" + locale + ".yml")) {
 			Files.copy(is, GlobalConstants.getMessageConfigPath().toPath(), StandardCopyOption.REPLACE_EXISTING);
-		} catch (IOException e) {
+		} catch (IOException ignored) {
 		}
 	}
 

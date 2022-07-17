@@ -17,25 +17,19 @@
 
 package autosaveworld.features.backup.utils;
 
-import java.io.BufferedOutputStream;
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.util.List;
-import java.util.zip.ZipEntry;
-import java.util.zip.ZipOutputStream;
-
 import autosaveworld.core.logging.MessageLogger;
 import autosaveworld.features.backup.BackupUtils;
 import autosaveworld.features.backup.InputStreamFactory;
 import autosaveworld.utils.FileUtils;
 
+import java.io.*;
+import java.util.List;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipOutputStream;
+
 public class ZipUtils {
 
-	public static void zipFolder(final File srcDir, final File destFile, List<String> excludefolders) throws FileNotFoundException, IOException {
+	public static void zipFolder(final File srcDir, final File destFile, List<String> excludefolders) throws IOException {
 		destFile.getParentFile().mkdirs();
 
 		try (OutputStream fos = new FileOutputStream(destFile)) {
@@ -75,7 +69,7 @@ public class ZipUtils {
 			MessageLogger.warn("Failed to backup file: "+srcFile.getAbsolutePath() + ", reason: canRead() returned false");
 			return;
 		}
-		InputStream inStream = null;
+		InputStream inStream;
 		try {
 			//first attempt to construct the input stream, may throw exception if file gone missing or some other thing happened
 			inStream = InputStreamFactory.getFileInputStream(srcFile);
@@ -116,7 +110,7 @@ public class ZipUtils {
 
 			try {
 				inStream.close();
-			} catch (IOException e) {
+			} catch (IOException ignored) {
 			}
 		}
 	}

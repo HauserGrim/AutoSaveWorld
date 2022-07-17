@@ -17,12 +17,12 @@
 
 package autosaveworld.features.backup;
 
+import autosaveworld.features.backup.utils.ratelimitedstreams.RateLimitedInputStream;
+
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
-
-import autosaveworld.features.backup.utils.ratelimitedstreams.RateLimitedInputStream;
 
 public class InputStreamFactory {
 

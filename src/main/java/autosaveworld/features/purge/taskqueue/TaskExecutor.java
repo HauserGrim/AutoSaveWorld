@@ -17,29 +17,24 @@
 
 package autosaveworld.features.purge.taskqueue;
 
-import java.util.ArrayList;
-
 import autosaveworld.utils.SchedulerUtils;
+
+import java.util.ArrayList;
 
 public class TaskExecutor implements AutoCloseable {
 
-	private int tasksLimit;
+	private final int tasksLimit;
 
 	public TaskExecutor(int tasksLimit) {
 		this.tasksLimit = tasksLimit;
 	}
 
-	protected final ArrayList<Task> tasks = new ArrayList<Task>();
+	protected final ArrayList<Task> tasks = new ArrayList<>();
 
 	public void execute(final Task task) {
 		if (task.doNotQueue()) {
 			SchedulerUtils.callSyncTaskAndWait(
-				new Runnable() {
-					@Override
-					public void run() {
-						task.performTask();
-					}
-				}
+					task::performTask
 			);
 		} else {
 			tasks.add(task);
@@ -51,15 +46,12 @@ public class TaskExecutor implements AutoCloseable {
 
 	protected void flush() {
 		SchedulerUtils.callSyncTaskAndWait(
-			new Runnable() {
-				@Override
-				public void run() {
+				() -> {
 					for (Task task : tasks) {
 						task.performTask();
 					}
 					tasks.clear();
 				}
-			}
 		);
 	}
 

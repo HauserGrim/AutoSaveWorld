@@ -22,11 +22,13 @@ import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.command.RemoteConsoleCommandSender;
 import org.bukkit.entity.Player;
 
+import java.util.Objects;
+
 public class PermissionCheck {
 
 	public boolean isAllowed(CommandSender sender, final String commandName, String[] args, boolean onlyfromconsole) {
-		if ((sender instanceof Player) && !onlyfromconsole) {
-			Player player = (Player) sender;
+		// Success, this was from the Console or Remote Console
+		if ((sender instanceof Player player) && !onlyfromconsole) {
 			// construct permissions name
 			String perm = null;
 			if (commandName.equalsIgnoreCase("autosaveworld")) {
@@ -43,13 +45,11 @@ public class PermissionCheck {
 				perm = "autosaveworld.purge";
 			}
 			// Check Permissions
-			if (player.isOp() || player.hasPermission(perm)) {
+			if (player.isOp() || player.hasPermission(Objects.requireNonNull(perm))) {
 				return true;
 			}
-		} else if ((sender instanceof ConsoleCommandSender) || (sender instanceof RemoteConsoleCommandSender)) {
 			// Success, this was from the Console or Remote Console
-			return true;
-		}
+		} else return (sender instanceof ConsoleCommandSender) || (sender instanceof RemoteConsoleCommandSender);
 
 		return false;
 	}

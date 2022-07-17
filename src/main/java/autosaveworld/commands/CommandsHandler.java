@@ -17,16 +17,15 @@
 
 package autosaveworld.commands;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
-
+import autosaveworld.core.AutoSaveWorld;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.TabCompleter;
 
-import autosaveworld.core.AutoSaveWorld;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
 
 public class CommandsHandler extends NoTabCompleteCommandsHandler implements TabCompleter {
 

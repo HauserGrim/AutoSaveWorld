@@ -17,16 +17,15 @@
 
 package autosaveworld.features.backup.ftp;
 
-import java.io.IOException;
-import java.net.SocketException;
-
 import autosaveworld.config.AutoSaveWorldConfig;
 import autosaveworld.core.AutoSaveWorld;
 import autosaveworld.features.backup.Backup;
 import autosaveworld.features.backup.utils.virtualfilesystem.VirtualBackupManager;
-import autosaveworld.zlibs.org.apache.commons.net.ftp.FTP;
-import autosaveworld.zlibs.org.apache.commons.net.ftp.FTPClient;
-import autosaveworld.zlibs.org.apache.commons.net.ftp.FTPReply;
+import org.apache.commons.net.ftp.FTP;
+import org.apache.commons.net.ftp.FTPClient;
+import org.apache.commons.net.ftp.FTPReply;
+
+import java.io.IOException;
 
 public class FTPBackup extends Backup {
 
@@ -34,7 +33,7 @@ public class FTPBackup extends Backup {
 		super("FTP");
 	}
 
-	public void performBackup() throws SocketException, IOException {
+	public void performBackup() throws IOException {
 		AutoSaveWorldConfig config = AutoSaveWorld.getInstance().getMainConfig();
 
 		FTPClient ftpclient = new FTPClient();

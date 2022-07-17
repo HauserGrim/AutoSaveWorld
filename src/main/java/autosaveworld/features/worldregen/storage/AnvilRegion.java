@@ -30,7 +30,7 @@ public class AnvilRegion {
 	private final File regionfolder;
 	private final int columnX;
 	private final int columnZ;
-	public AnvilRegion(File regionfolder, String filename) throws Throwable {
+	public AnvilRegion(File regionfolder, String filename) {
 		this.regionfolder = regionfolder;
 		String[] split = filename.split("[.]");
 		if (split.length != 4) {
@@ -40,10 +40,12 @@ public class AnvilRegion {
 		this.columnZ = Integer.parseInt(split[2]);
 	}
 
+	public static void init() {}
+
 	private static final int dataBlockSize = 4096;
 
 	private final int[] timestamps = new int[1024];
-	private final HashMap<Coord, byte[]> chunks = new HashMap<Coord, byte[]>();
+	private final HashMap<Coord, byte[]> chunks = new HashMap<>();
 
 	public int getX() {
 		return columnX;
@@ -54,7 +56,7 @@ public class AnvilRegion {
 	}
 
 	public List<Coord> getChunks() {
-		return new ArrayList<Coord>(chunks.keySet());
+		return new ArrayList<>(chunks.keySet());
 	}
 
 	public void removeChunk(Coord chunkcoord) {
@@ -62,7 +64,7 @@ public class AnvilRegion {
 	}
 
 	private File getFile() {
-		return new File(regionfolder, "r." + Integer.toString(columnX) + "." + Integer.toString(columnZ) + ".mca");
+		return new File(regionfolder, "r." + columnX + "." + columnZ + ".mca");
 	}
 
 	public void loadFromDisk() throws IOException {
@@ -86,7 +88,7 @@ public class AnvilRegion {
 			for (int x = 0; x < 32; x++) {
 				int location = locations[x + z * 32];
 				if (location != 0) {
-					raf.seek((location >> 8) * dataBlockSize);
+					raf.seek((long) (location >> 8) * dataBlockSize);
 					chunks.put(new Coord(x, z), readFully(raf, raf.readInt()));
 				}
 			}
@@ -117,7 +119,7 @@ public class AnvilRegion {
 			regionfile.createNewFile();
 		}
 		RandomAccessFile raf = new RandomAccessFile(regionfile, "rw");
-		ArrayList<byte[]> chunkbuffers = new ArrayList<byte[]>();
+		ArrayList<byte[]> chunkbuffers = new ArrayList<>();
 		int[] locations = new int[1024];
 		int currentoffset = 2;
 		for (Entry<Coord, byte[]> entry : chunks.entrySet()) {

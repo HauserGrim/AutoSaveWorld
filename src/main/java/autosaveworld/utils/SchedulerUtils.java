@@ -17,12 +17,11 @@
 
 package autosaveworld.utils;
 
-import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.TimeUnit;
-
+import autosaveworld.core.AutoSaveWorld;
 import org.bukkit.Bukkit;
 
-import autosaveworld.core.AutoSaveWorld;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.TimeUnit;
 
 public class SchedulerUtils {
 
@@ -39,12 +38,9 @@ public class SchedulerUtils {
 
 	private static void scheduleSyncTaskAndWaitInternal(final Runnable run, int timeout) {
 		final CountDownLatch latch = new CountDownLatch(1);
-		Bukkit.getScheduler().scheduleSyncDelayedTask(AutoSaveWorld.getInstance(), new Runnable() {
-			@Override
-			public void run() {
-				run.run();
-				latch.countDown();
-			}
+		Bukkit.getScheduler().scheduleSyncDelayedTask(AutoSaveWorld.getInstance(), () -> {
+			run.run();
+			latch.countDown();
 		});
 		try {
 			if (timeout == 0) {
@@ -52,7 +48,7 @@ public class SchedulerUtils {
 			} else {
 				latch.await(timeout, TimeUnit.SECONDS);
 			}
-		} catch (InterruptedException e) {
+		} catch (InterruptedException ignored) {
 		}
 	}
 

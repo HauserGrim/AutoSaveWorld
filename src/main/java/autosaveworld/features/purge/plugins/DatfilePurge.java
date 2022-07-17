@@ -17,15 +17,14 @@
 
 package autosaveworld.features.purge.plugins;
 
-import java.io.File;
-
-import org.bukkit.Bukkit;
-import org.bukkit.OfflinePlayer;
-
 import autosaveworld.core.logging.MessageLogger;
 import autosaveworld.features.purge.ActivePlayersList;
 import autosaveworld.features.purge.DataPurge;
 import autosaveworld.utils.FileUtils;
+import org.bukkit.Bukkit;
+import org.bukkit.OfflinePlayer;
+
+import java.io.File;
 
 public class DatfilePurge extends DataPurge {
 
@@ -40,9 +39,9 @@ public class DatfilePurge extends DataPurge {
 		for (OfflinePlayer player : activeplayerslist.getAllPlayers()) {
 			if (!activeplayerslist.isActiveUUID(player.getUniqueId())) {
 				MessageLogger.debug(player.getUniqueId() + " is inactive. Removing dat file");
-				FileUtils.buildFile(playersdatfolder, player.getUniqueId().toString() + ".dat").delete();
-				FileUtils.buildFile(playersstatsfolder, player.getUniqueId().toString() + ".dat").delete();
-				FileUtils.buildFile(playersstatsfolder, player.getUniqueId().toString() + ".json").delete();
+				FileUtils.buildFile(playersdatfolder, player.getUniqueId() + ".dat").delete();
+				FileUtils.buildFile(playersstatsfolder, player.getUniqueId() + ".dat").delete();
+				FileUtils.buildFile(playersstatsfolder, player.getUniqueId() + ".json").delete();
 				incDeleted();
 			}
 		}

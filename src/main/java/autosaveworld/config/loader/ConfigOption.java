@@ -17,26 +17,26 @@
 
 package autosaveworld.config.loader;
 
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
-
 import autosaveworld.config.loader.postload.NoPostLoad;
 import autosaveworld.config.loader.postload.PostLoad;
 import autosaveworld.config.loader.transform.NoTrasform;
 import autosaveworld.config.loader.transform.YamlTransform;
 
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
+
 @Target(value={ElementType.FIELD})
 @Retention(RetentionPolicy.RUNTIME)
 public @interface ConfigOption {
 
-	public String path();
+	String path();
 
-	public String[] legacypath() default {};
+	String[] legacypath() default {};
 
-	public Class<? extends YamlTransform> transform() default NoTrasform.class;
+	Class<? extends YamlTransform> transform() default NoTrasform.class;
 
-	public Class<? extends PostLoad> postload() default NoPostLoad.class;
+	Class<? extends PostLoad> postload() default NoPostLoad.class;
 
 }

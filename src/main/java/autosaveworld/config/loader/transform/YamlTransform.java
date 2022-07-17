@@ -19,8 +19,8 @@ package autosaveworld.config.loader.transform;
 
 public interface YamlTransform {
 
-	public Object toYaml(Object obj);
+	Object toYaml(Object obj);
 
-	public Object fromYaml(Object obj);
+	Object fromYaml(Object obj);
 
 }

@@ -24,9 +24,9 @@ import java.util.Set;
 
 public class WorldMap {
 
-	private final HashMap<Coord, Set<Coord>> map = new HashMap<Coord, Set<Coord>>(200);
+	private final HashMap<Coord, Set<Coord>> map = new HashMap<>(200);
 
-	private int growRadius;
+	private final int growRadius;
 
 	public WorldMap(int growRadius) {
 		this.growRadius = growRadius;

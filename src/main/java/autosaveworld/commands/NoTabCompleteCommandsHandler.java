@@ -17,33 +17,16 @@
 
 package autosaveworld.commands;
 
-import java.util.Arrays;
-import java.util.HashMap;
-
+import autosaveworld.commands.subcommands.*;
+import autosaveworld.config.LocaleChanger;
+import autosaveworld.core.AutoSaveWorld;
+import autosaveworld.core.logging.MessageLogger;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 
-import autosaveworld.commands.subcommands.BackupSubCommand;
-import autosaveworld.commands.subcommands.ForceGCSubCommand;
-import autosaveworld.commands.subcommands.ForceRestartSubCommand;
-import autosaveworld.commands.subcommands.HelpSubCommand;
-import autosaveworld.commands.subcommands.LocaleSubCommand;
-import autosaveworld.commands.subcommands.PluginManagerSubCommand;
-import autosaveworld.commands.subcommands.ProcessManagerSubCommand;
-import autosaveworld.commands.subcommands.PurgeSubCommand;
-import autosaveworld.commands.subcommands.ReloadAllSubCommand;
-import autosaveworld.commands.subcommands.ReloadConfigMSGSubCommand;
-import autosaveworld.commands.subcommands.ReloadConfigSubCommand;
-import autosaveworld.commands.subcommands.RestartSubCommand;
-import autosaveworld.commands.subcommands.SaveSubCommand;
-import autosaveworld.commands.subcommands.ServerStatusSubCommand;
-import autosaveworld.commands.subcommands.StopCommand;
-import autosaveworld.commands.subcommands.VersionSubCommand;
-import autosaveworld.commands.subcommands.WorldRegenSubCommand;
-import autosaveworld.config.LocaleChanger;
-import autosaveworld.core.AutoSaveWorld;
-import autosaveworld.core.logging.MessageLogger;
+import java.util.Arrays;
+import java.util.HashMap;
 
 public class NoTabCompleteCommandsHandler implements CommandExecutor {
 
@@ -63,7 +46,6 @@ public class NoTabCompleteCommandsHandler implements CommandExecutor {
 		subcommandhandlers.put("pmanager", new PluginManagerSubCommand());
 		subcommandhandlers.put("forcegc", new ForceGCSubCommand());
 		subcommandhandlers.put("serverstatus", new ServerStatusSubCommand());
-		subcommandhandlers.put("save", new SaveSubCommand());
 		subcommandhandlers.put("backup", new BackupSubCommand());
 		subcommandhandlers.put("purge", new PurgeSubCommand());
 		subcommandhandlers.put("restart", new RestartSubCommand());
@@ -86,11 +68,7 @@ public class NoTabCompleteCommandsHandler implements CommandExecutor {
 		}
 
 		// now handle commands
-		if (commandName.equalsIgnoreCase("autosave")) {
-			// "autosave" command handler
-			AutoSaveWorld.getInstance().getSaveThread().triggerTaskRun();
-			return true;
-		} else if (commandName.equalsIgnoreCase("autobackup")) {
+		if (commandName.equalsIgnoreCase("autobackup")) {
 			// "autobackup" command handler
 			AutoSaveWorld.getInstance().getBackupThread().triggerTaskRun();
 			return true;
@@ -108,11 +86,10 @@ public class NoTabCompleteCommandsHandler implements CommandExecutor {
 				ISubCommand handler = subcommandhandlers.get(subcommand);
 				if (handler.getMinArguments() > (args.length - 1)) {
 					MessageLogger.sendMessage(sender, "&4Not enough args");
-					return true;
 				} else {
 					handler.handle(sender, Arrays.copyOfRange(args, 1, args.length));
-					return true;
 				}
+				return true;
 			}
 		}
 		return false;

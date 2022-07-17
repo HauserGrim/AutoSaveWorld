@@ -17,14 +17,13 @@
 
 package autosaveworld.features.worldregen;
 
+import autosaveworld.core.AutoSaveWorld;
+import autosaveworld.core.logging.MessageLogger;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.AsyncPlayerPreLoginEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerLoginEvent;
-
-import autosaveworld.core.AutoSaveWorld;
-import autosaveworld.core.logging.MessageLogger;
 
 public class AntiJoinListener implements Listener {
 

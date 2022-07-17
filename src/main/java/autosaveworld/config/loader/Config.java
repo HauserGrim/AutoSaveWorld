@@ -21,6 +21,6 @@ import java.io.File;
 
 public interface Config {
 
-	public File getFile();
+	File getFile();
 
 }

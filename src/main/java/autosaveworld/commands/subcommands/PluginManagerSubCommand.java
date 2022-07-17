@@ -17,14 +17,13 @@
 
 package autosaveworld.commands.subcommands;
 
-import java.util.Arrays;
-import java.util.List;
-
-import org.bukkit.command.CommandSender;
-
 import autosaveworld.commands.ISubCommand;
 import autosaveworld.features.pluginmanager.PluginManager;
 import autosaveworld.utils.StringUtils;
+import org.bukkit.command.CommandSender;
+
+import java.util.Arrays;
+import java.util.List;
 
 public class PluginManagerSubCommand implements ISubCommand {
 
@@ -38,7 +37,7 @@ public class PluginManagerSubCommand implements ISubCommand {
 
 	@Override
 	public List<String> tabComplete(CommandSender sender, String[] args) {
-		return pluginmanager.getTabComplete(sender, args);
+		return pluginmanager.getTabComplete(args);
 	}
 
 	@Override

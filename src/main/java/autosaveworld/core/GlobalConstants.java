@@ -17,9 +17,9 @@
 
 package autosaveworld.core;
 
-import java.io.File;
-
 import autosaveworld.utils.FileUtils;
+
+import java.io.File;
 
 public class GlobalConstants {
 

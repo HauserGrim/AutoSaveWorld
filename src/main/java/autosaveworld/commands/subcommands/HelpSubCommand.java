@@ -17,20 +17,17 @@
 
 package autosaveworld.commands.subcommands;
 
-import java.util.Collections;
-import java.util.List;
-
-import org.bukkit.command.CommandSender;
-
 import autosaveworld.commands.ISubCommand;
 import autosaveworld.core.logging.MessageLogger;
+import org.bukkit.command.CommandSender;
+
+import java.util.Collections;
+import java.util.List;
 
 public class HelpSubCommand implements ISubCommand {
 
 	@Override
 	public void handle(CommandSender sender, String[] args) {
-		MessageLogger.sendMessage(sender, "&f/asw save&7 - &3Runs a save");
-		MessageLogger.sendMessage(sender, "&f/save&7 - &3Same as /asw save");
 		MessageLogger.sendMessage(sender, "&f/asw backup&7 - &3Does a backup");
 		MessageLogger.sendMessage(sender, "&f/backup&7 - &3Same as /asw backup");
 		MessageLogger.sendMessage(sender, "&f/asw purge&7 - &3Purges plugins info from inactive players");

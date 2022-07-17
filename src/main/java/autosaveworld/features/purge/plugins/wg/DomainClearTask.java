@@ -17,25 +17,24 @@
 
 package autosaveworld.features.purge.plugins.wg;
 
-import java.util.LinkedList;
-import java.util.UUID;
-
+import autosaveworld.core.logging.MessageLogger;
+import autosaveworld.features.purge.taskqueue.Task;
 import com.sk89q.worldguard.domains.DefaultDomain;
 import com.sk89q.worldguard.protection.regions.ProtectedRegion;
 
-import autosaveworld.core.logging.MessageLogger;
-import autosaveworld.features.purge.taskqueue.Task;
+import java.util.LinkedList;
+import java.util.UUID;
 
 public class DomainClearTask implements Task {
 
-	private ProtectedRegion region;
+	private final ProtectedRegion region;
 
 	public DomainClearTask(ProtectedRegion region) {
 		this.region = region;
 	}
 
-	private LinkedList<UUID> uuids = new LinkedList<UUID>();
-	private LinkedList<String> names = new LinkedList<String>();
+	private final LinkedList<UUID> uuids = new LinkedList<>();
+	private final LinkedList<String> names = new LinkedList<>();
 
 	public void add(UUID uuid) {
 		uuids.add(uuid);

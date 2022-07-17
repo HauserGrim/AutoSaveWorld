@@ -17,11 +17,6 @@
 
 package autosaveworld.core;
 
-import java.io.File;
-
-import org.bukkit.Bukkit;
-import org.bukkit.plugin.java.JavaPlugin;
-
 import autosaveworld.commands.CommandsHandler;
 import autosaveworld.commands.NoTabCompleteCommandsHandler;
 import autosaveworld.commands.subcommands.StopCommand;
@@ -37,12 +32,16 @@ import autosaveworld.features.restart.AutoRestartThread;
 import autosaveworld.features.restart.CrashRestartThread;
 import autosaveworld.features.restart.RestartShutdownHook;
 import autosaveworld.features.restart.RestartWaiter;
-import autosaveworld.features.save.AutoSaveThread;
+import autosaveworld.features.worldregen.storage.AnvilRegion;
 import autosaveworld.utils.FileUtils;
 import autosaveworld.utils.ReflectionUtils;
 import autosaveworld.utils.SchedulerUtils;
 import autosaveworld.utils.StringUtils;
 import autosaveworld.utils.Threads.SIntervalTaskThread;
+import org.bukkit.Bukkit;
+import org.bukkit.plugin.java.JavaPlugin;
+
+import java.io.File;
 
 public class AutoSaveWorld extends JavaPlugin {
 
@@ -66,7 +65,6 @@ public class AutoSaveWorld extends JavaPlugin {
 		//important to create instance here
 		config = new AutoSaveWorldConfig();
 		configmsg = new AutoSaveWorldConfigMSG();
-		saveThread = new AutoSaveThread();
 		backupThread = new AutoBackupThread();
 		purgeThread = new AutoPurgeThread();
 		autorestartThread = new AutoRestartThread();
@@ -78,7 +76,6 @@ public class AutoSaveWorld extends JavaPlugin {
 	private final AutoSaveWorldConfig config;
 	private final AutoSaveWorldConfigMSG configmsg;
 
-	private final AutoSaveThread saveThread;
 	private final AutoBackupThread backupThread;
 	private final AutoPurgeThread purgeThread;
 	private final AutoRestartThread autorestartThread;
@@ -92,10 +89,6 @@ public class AutoSaveWorld extends JavaPlugin {
 
 	public AutoSaveWorldConfigMSG getMessageConfig() {
 		return configmsg;
-	}
-
-	public AutoSaveThread getSaveThread() {
-		return saveThread;
 	}
 
 	public AutoBackupThread getBackupThread() {
@@ -128,7 +121,6 @@ public class AutoSaveWorld extends JavaPlugin {
 				getCommand(commandName).setExecutor(commandshandler);
 			}
 		}
-		saveThread.start();
 		backupThread.start();
 		purgeThread.start();
 		autorestartThread.start();
@@ -144,6 +136,8 @@ public class AutoSaveWorld extends JavaPlugin {
 		FileUtils.init();
 		StringUtils.init();
 		RestartWaiter.init();
+		AnvilRegion.init();
+		RestartShutdownHook.init();
 	}
 
 	@Override
@@ -152,13 +146,8 @@ public class AutoSaveWorld extends JavaPlugin {
 			MessageLogger.debug("Restarting due to server stopped not by asw command");
 			Runtime.getRuntime().addShutdownHook(new RestartShutdownHook(new File(config.restartOnCrashScriptPath)));
 		}
-		if (config.saveOnASWDisable) {
-			MessageLogger.debug("Saving");
-			saveThread.performSaveNow();
-		}
 		ConfigLoader.save(config);
 		ConfigLoader.save(configmsg);
-		stopThread(saveThread);
 		stopThread(backupThread);
 		stopThread(purgeThread);
 		stopThread(autorestartThread);
@@ -171,7 +160,7 @@ public class AutoSaveWorld extends JavaPlugin {
 		tt.stopThread();
 		try {
 			tt.join(2000);
-		} catch (InterruptedException e) {
+		} catch (InterruptedException ignored) {
 		}
 	}
 

@@ -17,17 +17,13 @@
 
 package autosaveworld.features.purge.plugins.permissions;
 
-import org.bukkit.Bukkit;
-
 import autosaveworld.features.purge.ActivePlayersList;
 import autosaveworld.features.purge.DataPurge;
+import org.bukkit.Bukkit;
 
 public class PermissionsPurge {
 
 	public static DataPurge selectDataPurge(ActivePlayersList activeplayerslist) {
-		if (Bukkit.getPluginManager().getPlugin("GroupManager") != null) {
-			return new GroupManagerPurge(activeplayerslist);
-		}
 		if (Bukkit.getPluginManager().getPlugin("Vault") != null) {
 			return new VaultPurge(activeplayerslist);
 		}

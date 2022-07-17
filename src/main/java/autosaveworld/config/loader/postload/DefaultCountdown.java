@@ -33,7 +33,7 @@ public class DefaultCountdown implements PostLoad {
 				list.add(i);
 			}
 		}
-		Collections.sort(list, Collections.reverseOrder());
+		list.sort(Collections.reverseOrder());
 	}
 
 }
