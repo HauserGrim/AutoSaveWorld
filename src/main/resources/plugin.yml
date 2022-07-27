@@ -11,6 +11,7 @@ libraries:
   - com.jcraft:jsch:0.1.55
   - com.google.auth:google-auth-library-oauth2-http:1.8.1
   - com.google.apis:google-api-services-drive:v3-rev20220508-1.32.1
+  - com.dropbox.core:dropbox-core-sdk:5.2.0
 
 commands:
   autosaveworld:
