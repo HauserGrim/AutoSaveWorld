@@ -6,12 +6,12 @@ author: _Shevchik_
 load: STARTUP
 softdepend: [Vault, Essentials, WorldEdit, WorldGuard, GriefPrevemtion, Towny]
 libraries:
-  - commons-codec:commons-codec:1.15
-  - commons-net:commons-net:3.8.0
+  - commons-codec:commons-codec:1.16.1
+  - commons-net:commons-net:3.10.0
   - com.jcraft:jsch:0.1.55
-  - com.google.auth:google-auth-library-oauth2-http:1.8.1
-  - com.google.apis:google-api-services-drive:v3-rev20220508-1.32.1
-  - com.dropbox.core:dropbox-core-sdk:5.2.0
+  - com.google.auth:google-auth-library-oauth2-http:1.23.0
+  - com.google.apis:google-api-services-drive:v3-rev197-1.25.0
+  - com.dropbox.core:dropbox-core-sdk:6.0.0
 
 commands:
   autosaveworld:
