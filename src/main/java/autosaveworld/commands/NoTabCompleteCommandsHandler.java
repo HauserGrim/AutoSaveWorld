@@ -43,7 +43,6 @@ public class NoTabCompleteCommandsHandler implements CommandExecutor {
 		subcommandhandlers.put("reloadmsg", new ReloadConfigMSGSubCommand());
 		subcommandhandlers.put("locale", new LocaleSubCommand(localeChanger));
 		subcommandhandlers.put("process", new ProcessManagerSubCommand());
-		subcommandhandlers.put("pmanager", new PluginManagerSubCommand());
 		subcommandhandlers.put("forcegc", new ForceGCSubCommand());
 		subcommandhandlers.put("serverstatus", new ServerStatusSubCommand());
 		subcommandhandlers.put("backup", new BackupSubCommand());
